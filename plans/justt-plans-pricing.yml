@@ -1,0 +1,26 @@
+generated: '2026-08-23'
+method: searched
+source: https://justt.ai/
+plan_count: 0
+pricing_page: null
+note: >-
+  Justt publishes NO pricing page and NO plans. There is no /pricing URL on
+  justt.ai (HTTP 404) and none appears in the site's own Yoast page-sitemap,
+  which lists all 27 published pages. The commercial motion is a demo request
+  at https://justt.ai/request-demo/ followed by a custom ROI analysis built from
+  the merchant's historical PSP chargeback extracts — the developer docs carry a
+  per-PSP "extract your chargeback data for ROI analysis" guide for sixteen
+  processors, which is the pre-sales artifact that stands in for a price list.
+  Justt's marketing describes performance-linked economics ("2X recovered revenue")
+  but publishes no rate, no percentage, and no minimum. Recorded as an honest zero:
+  enterprise contact-sales only, not an omission by this pipeline.
+plans: []
+commercial_model:
+  motion: contact-sales
+  entry_point: https://justt.ai/request-demo/
+  evidence:
+  - url: https://justt.ai/pricing/
+    status: 404
+  - url: https://justt.ai/page-sitemap.xml
+    status: 200
+    note: 27 pages listed, none of them a pricing page

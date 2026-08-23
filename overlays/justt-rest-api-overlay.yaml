@@ -1,0 +1,97 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Justt REST API
+  version: 1.0.0
+extends: openapi/justt-rest-api-openapi-original.json
+x-generated: '2026-08-23'
+x-method: generated
+x-source: >-
+  Derived from API Evangelist's own analysis of the harvested spec plus Justt's
+  published documentation. The original spec is never mutated; these are our
+  annotations, not Justt's.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/justt
+    x-apievangelist-conventions: conventions/justt-conventions.yml
+    x-apievangelist-errors: errors/justt-problem-types.yml
+    x-apievangelist-rate-limits: rate-limits/justt-rate-limits.yml
+    x-apievangelist-data-model: data-model/justt-data-model.yml
+    x-apievangelist-sandbox: sandbox/justt-sandbox.yml
+    x-apievangelist-webhooks: asyncapi/justt-webhook-events.yml
+- target: $.info
+  description: >-
+    The harvested spec's info block carries an empty contact object and no license.
+    Record the contact Justt publishes on its sibling Alerts spec.
+  update:
+    x-apievangelist-suggested-contact:
+      name: Justt Support
+      email: support@justt.ai
+      url: https://app.justt.ai/support
+- target: $
+  description: >-
+    The spec declares a bearer securityScheme but leaves the top-level security
+    array empty and applies no requirement to any operation, so a generated client
+    sends no credential by default. Every operation in fact requires the bearer key.
+  update:
+    x-apievangelist-suggested-security:
+    - bearer: []
+- target: $.paths['/chargebacks/{id}/accept'].post
+  description: >-
+    Justt's own documentation states this action is terminal. Mark it so an agent
+    planner can see the consequence without reading prose.
+  update:
+    x-apievangelist-reversible: false
+    x-apievangelist-consequence: financial
+    x-apievangelist-human-in-the-loop: required
+    x-apievangelist-note: >-
+      "Once accepted, the chargeback cannot be reversed." Funds return to the
+      cardholder. Asynchronous — poll GET /chargebacks/{id}/accept.
+- target: $.paths['/chargebacks/{id}/evidence/submit'].post
+  update:
+    x-apievangelist-reversible: false
+    x-apievangelist-async: true
+    x-apievangelist-completion: up to 24 hours, depending on the payment processor
+    x-apievangelist-poll: EvidenceController_getEvidenceSubmissionStatus
+- target: $.paths['/chargebacks/{id}/should-fight'].patch
+  update:
+    x-apievangelist-reversible: true
+    x-apievangelist-reversal: re-issue with the opposite boolean
+    x-apievangelist-window-published: false
+- target: $.paths['/data-subjects/removal'].post
+  update:
+    x-apievangelist-reversible: false
+    x-apievangelist-consequence: irreversible-erasure
+    x-apievangelist-regime: [GDPR, CCPA]
+- target: $.paths['/merchants'].delete
+  update:
+    x-apievangelist-soft-delete: true
+    x-apievangelist-reactivate-operation: none published
+- target: $.paths['/integrations/{id}'].delete
+  update:
+    x-apievangelist-soft-delete: true
+    x-apievangelist-reactivate-operation: none published
+- target: $.paths['/chargebacks'].get
+  description: Record the documented pagination contract, which the spec does not describe.
+  update:
+    x-apievangelist-pagination:
+      style: page-number
+      params: [page, limit]
+      limit_default: 10
+      limit_max: 100
+      continuation_field: hasMore
+      total_count: false
+- target: $.components.schemas.ErrorResponseDTO
+  description: >-
+    Note the drift between this schema and the example published on the docs'
+    Error Handling page, which uses an `error` key instead of `status`.
+  update:
+    x-apievangelist-docs-drift: >-
+      https://developers.justt.ai/docs/error-handling shows {error, message,
+      errorId}; this schema declares {status, message, errorId}. The schema is
+      treated as authoritative.
+- target: $.components.schemas.PSP
+  update:
+    x-apievangelist-note: >-
+      ~60 processors can be INGESTED, while SupportedPSP lists only 5 that can be
+      self-serve connected through POST /integrations.

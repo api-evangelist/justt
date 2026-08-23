@@ -1,0 +1,309 @@
+generated: '2026-08-23'
+method: searched
+source: >-
+  https://developers.justt.ai/docs/getting-started,
+  https://developers.justt.ai/docs/authentication,
+  https://developers.justt.ai/docs/responses,
+  https://developers.justt.ai/docs/pagination,
+  https://developers.justt.ai/docs/data-conventions,
+  https://developers.justt.ai/docs/error-handling,
+  openapi/justt-rest-api-openapi-original.json
+docs: https://developers.justt.ai/docs/getting-started
+
+transport:
+  scheme: https-only
+  statement: >-
+    "All our API calls must be transmitted over HTTPS. Calls made over plain HTTP
+    will not succeed."
+  content_type: application/json
+  base_url: https://api.justt.ai/v1
+  sandbox_base_url: https://api.justt.ai/v1/sandbox
+
+authentication:
+  style: bearer-api-key
+  header: Authorization
+  format: 'Bearer <api-key>'
+  issuance: https://app.justt.ai/connect-psp/integration/api-integration
+  scheme_in_spec: bearer (http, bearerFormat JWT)
+  docs: https://developers.justt.ai/docs/authentication
+  cross_reference: authentication/justt-authentication.yml
+
+multi_tenancy:
+  header: reference-account-id
+  in: header
+  required: false
+  applies_to: 17 of 21 REST operations
+  purpose: >-
+    Selects which merchant account ("reference account") a request acts on when one
+    API key spans several merchants. Documented at
+    https://developers.justt.ai/docs/reference-accounts
+  note: >-
+    This is the closest thing Justt has to a scoping mechanism. It is a plain
+    request header, not a token claim, so an agent's blast radius is determined by
+    the key, not by the header.
+
+idempotency:
+  supported: false
+  header: null
+  scope: null
+  retention: null
+  evidence: >-
+    No Idempotency-Key parameter appears in any of the 23 operations across the two
+    OpenAPI definitions, and no idempotency guidance appears anywhere in the 100-page
+    documentation index at https://developers.justt.ai/llms.txt.
+  risk: >-
+    Several operations are non-trivially repeatable. POST /chargebacks/{id}/accept is
+    irreversible; POST /chargebacks/{id}/evidence/submit starts an asynchronous PSP
+    submission that can take up to 24 hours; POST /files uploads a new file on every
+    call. With no idempotency key and no documented retry-safety contract, a client
+    that retries a timed-out write cannot know whether the first call landed. The
+    asynchronous status endpoints (GET /chargebacks/{id}/accept and
+    GET /chargebacks/{id}/evidence/submit/{submitEvidenceId}) are the only available
+    reconciliation path.
+  note: >-
+    NO Idempotency pointer is emitted in apis.yml. The provider does not publish an
+    idempotency contract, and claiming one would be false.
+
+pagination:
+  style: page-number
+  request_params:
+  - name: page
+    in: query
+    type: integer
+    default: 1
+  - name: limit
+    in: query
+    type: integer
+    default: 10
+    maximum: 100
+  response_fields:
+  - name: data
+    description: array of entities for the requested page
+  - name: hasMore
+    description: boolean indicating whether more items remain
+  cursor: false
+  total_count: false
+  note: >-
+    No total count and no cursor. hasMore is the only continuation signal, so a
+    client cannot size a job before starting it.
+  docs: https://developers.justt.ai/docs/pagination
+
+filtering:
+  date_range:
+    params: [startDate, endDate, pspStatusChangeStartDate, pspStatusChangeEndDate]
+    docs: https://developers.justt.ai/docs/date-range-filtering
+  chargeback_filters: [chargebackId, psp, pspStatus, status, minEnrichmentScore, maxEnrichmentScore]
+  ordering:
+    docs: https://developers.justt.ai/docs/response-order
+
+response_envelope:
+  shape: wrapped
+  read_example:
+    status: '200'
+    message: success
+    data: {}
+  create_example:
+    status: '201'
+    message: success
+    id: <id>
+  note: >-
+    Every response is wrapped in a {status, message, ...} envelope, and `status`
+    duplicates the HTTP status code inside the body. Note the documented quirk that
+    successful creates return 201 in both the HTTP status and the envelope, while the
+    Responses page lists 201 (not 200) as the generic "OK: Successful request".
+  docs: https://developers.justt.ai/docs/responses
+
+error_envelope:
+  shape: custom
+  rfc9457: false
+  media_type: application/json
+  fields:
+  - name: status
+    type: number
+    required: true
+  - name: message
+    type: string
+    required: true
+  - name: errorId
+    type: string
+    required: false
+    description: >-
+      A UUID unique to the failure, quotable to Justt support for troubleshooting.
+      This is Justt's correlation identifier and the closest thing the API has to a
+      request-id.
+  cross_reference: errors/justt-problem-types.yml
+  docs: https://developers.justt.ai/docs/error-handling
+
+request_tracing:
+  request_id_header: null
+  correlation_field: errorId
+  note: >-
+    No request-id header is documented on requests or on successful responses.
+    Correlation is only possible on failures, via the errorId in the error body.
+
+data_conventions:
+  null_handling: >-
+    Empty values (null, undefined) are rejected at validation. Omit a field rather
+    than sending it null.
+  dates:
+    formats: [ISO 8601 UTC (YYYY-MM-DDTHH:MM:SSZ), Unix timestamp (seconds)]
+    note: both accepted on every endpoint that takes a date/time
+  currency:
+    standard: ISO 4217
+    format: three-letter code
+  numbers: decimal
+  text: UTF-8 strings
+  identifiers: alphanumeric strings
+  docs: https://developers.justt.ai/docs/data-conventions
+
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://api.justt.ai/v1
+  header_versioning: false
+  cross_reference: lifecycle/justt-lifecycle.yml
+
+rate_limit_signaling:
+  documented_limit: 1000 requests per minute
+  status_on_exhaustion: 429
+  response_headers: none published
+  cross_reference: rate-limits/justt-rate-limits.yml
+
+webhooks:
+  signature_headers: [webhook-id, webhook-timestamp, webhook-signature]
+  spec_security_scheme: svix-signature (apiKey, header)
+  algorithm: HMAC-SHA256
+  replay_tolerance_recommended: 5 minutes
+  retry_schedule: [immediate, 5s, 5m, 30m, 2h, 5h, 10h, 10h]
+  permanent_failure_code: 410 Gone
+  timeout: 15 seconds
+  auto_disable_after: 5 consecutive days of total failure
+  cross_reference: asyncapi/justt-webhook-events.yml
+  docs: https://developers.justt.ai/docs/signature-verification
+
+dry_run_mode:
+  supported: false
+  substitute: sandbox
+  note: >-
+    There is no dry-run or preview flag on any operation. Rehearsal is done in a
+    separate sandbox environment with separate tokens rather than in-band —
+    see sandbox/justt-sandbox.yml.
+
+reversibility:
+  grade: documented
+  evidence_basis: >-
+    Graded from the operation descriptions in
+    openapi/justt-rest-api-openapi-original.json plus
+    https://developers.justt.ai/docs/accept-chargeback-process. One reversal path is
+    published; NO reversal WINDOW is stated anywhere in Justt's documentation, so
+    this does not reach `verified`.
+  write_surfaces:
+  - operation: ChargebackItemController_markShouldFight
+    method: PATCH
+    path: /chargebacks/{id}/should-fight
+    action: Override whether Justt represents this chargeback
+    reversible: true
+    reversal: >-
+      Re-issue the same PATCH with the opposite boolean. shouldFight is a boolean
+      override on a per-chargeback decision, so the call is its own inverse.
+    window_stated: false
+    window_note: >-
+      Justt does NOT state how long the override remains changeable. It is
+      necessarily bounded by the PSP's evidence deadline and by whether Justt has
+      already acted, but no document gives a duration. An agent must not assume it
+      can flip this back later.
+    docs: https://developers.justt.ai/reference/chargebackitemcontroller_markshouldfight
+  - operation: ChargebackItemController_acceptChargeback
+    method: POST
+    path: /chargebacks/{id}/accept
+    action: Accept the chargeback and forgo representment; funds return to the cardholder
+    reversible: false
+    reversal: null
+    window_stated: false
+    provider_statement: >-
+      "Once accepted, the chargeback cannot be reversed."
+    consequence: financial
+    docs: https://developers.justt.ai/docs/accept-chargeback-process
+    note: >-
+      This is the highest-consequence operation in the API and Justt states plainly
+      that it is terminal. Any agent with write access must treat it as
+      human-in-the-loop.
+  - operation: EvidenceController_submitEvidence
+    method: POST
+    path: /chargebacks/{id}/evidence/submit
+    action: Submit an evidence file to the PSP
+    reversible: false
+    reversal: null
+    window_stated: false
+    note: >-
+      Asynchronous; the spec says submission "will take up to 24 hours to complete,
+      depending on the payment processor". No cancel, withdraw, or replace operation
+      is published. Progress is observable through
+      EvidenceController_getEvidenceSubmissionStatus but cannot be stopped.
+  - operation: MerchantsController_deactivateMerchant
+    method: DELETE
+    path: /merchants
+    action: Deactivate a merchant
+    reversible: unknown
+    reversal: null
+    window_stated: false
+    soft_delete: true
+    provider_statement: >-
+      "Deactivate a merchant (note: merchant is not removed, only deactivated)"
+    note: >-
+      The data survives, so the destructive part is undone in principle — but Justt
+      publishes NO reactivate operation, so an API client cannot reverse it without
+      involving Justt. Deactivation also accepts a future deactivationDate
+      (postingDate or dueDate), which is the one place the API lets a caller schedule
+      rather than fire immediately.
+  - operation: IntegrationsController_deactivateIntegration
+    method: DELETE
+    path: /integrations/{id}
+    action: Deactivate a PSP integration
+    reversible: unknown
+    reversal: null
+    window_stated: false
+    soft_delete: true
+    provider_statement: >-
+      "Deactivate an integration (note: integration is not removed, only deactivated)"
+  - operation: DataSubjectsController_requestDataSubjectRemoval
+    method: POST
+    path: /data-subjects/removal
+    action: Erase a data subject's personal data under GDPR/CCPA
+    reversible: false
+    reversal: null
+    window_stated: false
+    note: >-
+      Irreversible by design — the point of the operation is erasure. Treat as
+      terminal and human-approved.
+  - operation: TransactionController_createTransaction
+    method: POST
+    path: /transactions
+    action: Upsert transaction data onto an existing chargeback case
+    reversible: true
+    reversal: >-
+      Upsert semantics — re-posting the same transaction reference overwrites the
+      prior values, so a bad enrichment can be corrected by writing the right one.
+    window_stated: false
+  - operation: ChargebackItemController_updateChargeback
+    method: PATCH
+    path: /chargebacks/{id}
+    action: Enrich a chargeback with additional data points
+    reversible: true
+    reversal: >-
+      PATCH again with corrected values. Enrichment fields are overwritten, not
+      appended.
+    window_stated: false
+  summary:
+    total_write_operations: 10
+    with_reversal_path: 4
+    irreversible_and_stated: 3
+    soft_delete_no_public_reactivate: 2
+    with_stated_window: 0
+  recommendation: >-
+    Justt earns `documented` rather than `verified` because it names one genuinely
+    terminal action and one genuinely invertible one, but never states a time window
+    for any of them. Publishing the evidence deadline / should-fight cutoff as a
+    field on the chargeback object — the PSP's due_by is already in Justt's own
+    sandbox payloads — would move this to `verified` and is the single cheapest
+    agent-readiness improvement available here.

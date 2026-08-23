@@ -1,0 +1,108 @@
+arazzo: 1.0.1
+info:
+  title: Submit evidence for a Justt chargeback
+  version: 1.0.0
+  description: >-
+    Read an open chargeback, upload an evidence file, submit it to the PSP, and
+    poll the asynchronous submission to a terminal state.
+sourceDescriptions:
+- name: justtRest
+  url: ../openapi/justt-rest-api-openapi-original.json
+  type: openapi
+workflows:
+- workflowId: submitEvidenceForChargeback
+  summary: Upload and submit an evidence file against an open chargeback
+  description: >-
+    Evidence submission is irreversible and asynchronous — it can take up to 24
+    hours to complete at the PSP. There is no idempotency key on any step, so a
+    timed-out call must be reconciled with a read before it is retried.
+  inputs:
+    type: object
+    required: [chargebackId, evidenceFile]
+    properties:
+      chargebackId:
+        type: string
+        description: Justt's UUID for the chargeback
+      referenceAccountId:
+        type: string
+        description: Merchant account reference, when one key serves several merchants
+      evidenceFile:
+        type: string
+        format: binary
+      purpose:
+        type: string
+        enum: [evidence_file, evidence_image]
+        default: evidence_file
+  steps:
+  - stepId: getChargeback
+    description: Confirm the chargeback exists and is still actionable
+    operationId: ChargebackItemController_getChargeback
+    parameters:
+    - name: id
+      in: path
+      value: $inputs.chargebackId
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      pspStatus: $response.body#/data/pspStatus
+  - stepId: uploadFile
+    description: >-
+      Upload the evidence file. The multipart field name must be exactly "file".
+    operationId: FilesController_create
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: multipart/form-data
+      payload:
+        file: $inputs.evidenceFile
+        purpose: $inputs.purpose
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      fileId: $response.body#/fileId
+  - stepId: submitEvidence
+    description: Submit the uploaded file against the chargeback. Irreversible.
+    operationId: EvidenceController_submitEvidence
+    parameters:
+    - name: id
+      in: path
+      value: $inputs.chargebackId
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload:
+        fileId: $steps.uploadFile.outputs.fileId
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      submitEvidenceId: $response.body#/id
+  - stepId: pollSubmissionStatus
+    description: >-
+      Poll until status is succeeded or failed. Prefer the
+      chargeback.evidence.submitted webhook over tight polling.
+    operationId: EvidenceController_getEvidenceSubmissionStatus
+    parameters:
+    - name: id
+      in: path
+      value: $inputs.chargebackId
+    - name: submitEvidenceId
+      in: path
+      value: $steps.submitEvidence.outputs.submitEvidenceId
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      error: $response.body#/error
+  outputs:
+    submitEvidenceId: $steps.submitEvidence.outputs.submitEvidenceId
+    status: $steps.pollSubmissionStatus.outputs.status

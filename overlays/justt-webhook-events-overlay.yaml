@@ -1,0 +1,35 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for Justt Webhook Events
+  version: 1.0.0
+extends: asyncapi/justt-webhook-events-openapi-original.json
+x-generated: '2026-08-23'
+x-method: generated
+x-source: >-
+  API Evangelist annotations derived from the harvested OpenAPI 3.1 webhooks
+  document and Justt's published webhook documentation.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/justt
+    x-apievangelist-standard: Standard Webhooks (webhook-id / webhook-timestamp / webhook-signature)
+    x-apievangelist-catalog: asyncapi/justt-webhook-events.yml
+    x-apievangelist-delivery:
+      timeout_seconds: 15
+      success: any 2xx
+      retry_schedule: [immediate, 5s, 5m, 30m, 2h, 5h, 10h, 10h]
+      permanent_failure_status: 410
+      auto_disable_after_days: 5
+    x-apievangelist-consumer-requirement: >-
+      Because delivery is retried up to eight times, consumer handlers must be
+      idempotent and should deduplicate on the webhook-id header.
+- target: $.webhooks['pre_chargeback_alert.transaction_matched']
+  update:
+    x-apievangelist-opt-in: true
+    x-apievangelist-gate: additional_event_types account configuration, enabled by Justt
+- target: $.webhooks['subscription.cancel_immediately.failed']
+  update:
+    x-apievangelist-severity: action-required
+    x-apievangelist-note: >-
+      The refund succeeded but the CRM subscription did not cancel, so the customer
+      keeps entitlement after being refunded. Carries failureCode and failureReason.

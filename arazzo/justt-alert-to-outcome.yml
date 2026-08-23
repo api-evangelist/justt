@@ -1,0 +1,87 @@
+arazzo: 1.0.1
+info:
+  title: Work a Justt pre-chargeback alert to a reported outcome
+  version: 1.0.0
+  description: >-
+    Pull pre-chargeback alerts from Ethoca / Verifi, read one, and report its
+    outcome back to Justt using the alert networks' own outcome vocabulary. Note
+    the read operations and the write operation live in two different Justt
+    specifications.
+sourceDescriptions:
+- name: justtAlerts
+  url: ../openapi/justt-pre-chargeback-alerts-openapi-original.json
+  type: openapi
+- name: justtRest
+  url: ../openapi/justt-rest-api-openapi-original.json
+  type: openapi
+workflows:
+- workflowId: alertToOutcome
+  summary: List alerts, read one, report the outcome
+  inputs:
+    type: object
+    required: [providerName, refunded, outcome]
+    properties:
+      referenceAccountId:
+        type: string
+      limit:
+        type: integer
+        default: 50
+      providerName:
+        type: string
+        enum: [Verifi RDR, Verifi CDRN, Ethoca]
+      refunded:
+        type: string
+        enum: [refunded, not refunded, not settled]
+      outcome:
+        type: string
+        description: >-
+          An OutcomeStatus value — either a readable status (resolved,
+          previously_refunded, unresolved_dispute, stopped, partially_stopped,
+          previously_cancelled, missed, notfound, account_suspended, in_progress,
+          shipper_contacted, other) or a network numeric code (100, 101, 102, 130,
+          900, 901, 902, 940, 950-957, 951).
+      comments:
+        type: string
+  steps:
+  - stepId: listAlerts
+    description: Retrieve pre-chargeback alerts matching the given criteria
+    operationId: $sourceDescriptions.justtAlerts.AlertController_findAll
+    parameters:
+    - name: limit
+      in: query
+      value: $inputs.limit
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      firstAlertId: $response.body#/data/0/id
+      hasMore: $response.body#/hasMore
+  - stepId: readAlert
+    description: Retrieve a single alert by its internal id
+    operationId: $sourceDescriptions.justtAlerts.AlertController_findOne
+    parameters:
+    - name: internalAlertId
+      in: path
+      value: $steps.listAlerts.outputs.firstAlertId
+    successCriteria:
+    - condition: $statusCode == 200
+  - stepId: reportOutcome
+    description: >-
+      Record what was done about the alert. Lives in the REST API specification,
+      not in the Alerts specification.
+    operationId: $sourceDescriptions.justtRest.PreChargebackAlertsController_createOutcome
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload:
+        providerName: $inputs.providerName
+        alertId: $steps.listAlerts.outputs.firstAlertId
+        refunded: $inputs.refunded
+        outcome: $inputs.outcome
+        comments: $inputs.comments
+    successCriteria:
+    - condition: $statusCode == 201
+  outputs:
+    alertId: $steps.listAlerts.outputs.firstAlertId

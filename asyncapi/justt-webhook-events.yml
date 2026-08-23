@@ -1,0 +1,121 @@
+generated: '2026-08-23'
+method: searched
+source: https://developers.justt.ai/openapi/webhooks.swagger-spec.json
+spec_type: OpenAPI
+spec_version: 3.1.0
+spec_file: asyncapi/justt-webhook-events-openapi-original.json
+asyncapi_published: false
+asyncapi_note: >-
+  Justt publishes no AsyncAPI document. It describes its event surface with the
+  OpenAPI 3.1 top-level `webhooks` object instead — a legitimate and increasingly
+  common choice for HTTP webhooks, and a machine-readable contract either way.
+  Eleven events are fully typed with request bodies and schemas. Recorded as a
+  Webhooks surface rather than an AsyncAPI one; no AsyncAPI pointer is emitted
+  because no AsyncAPI document exists.
+discovery:
+  via: https://developers.justt.ai/.well-known/api-catalog
+  note: >-
+    This specification is NOT linked from the getting-started page. It was found
+    through the RFC 9727 api-catalog linkset.
+docs:
+  introduction: https://developers.justt.ai/docs/webhook-introduction
+  events: https://developers.justt.ai/docs/webhook-events-event-types
+  add_endpoint: https://developers.justt.ai/docs/add-a-webhook-endpoint
+  signature_verification: https://developers.justt.ai/docs/signature-verification
+  testing: https://developers.justt.ai/docs/test-webhook-endpoints
+  retries: https://developers.justt.ai/docs/webhook-retry-mechanism
+  troubleshooting: https://developers.justt.ai/docs/troubleshooting-failure-recovery
+  advanced: https://developers.justt.ai/docs/webhook-advanced-features
+  transformations: https://developers.justt.ai/docs/justt-webhook-transformations
+transport:
+  direction: outbound (Justt -> merchant endpoint)
+  protocol: https
+  method: POST
+  content_type: application/json
+security:
+  scheme: svix-signature
+  standard: Standard Webhooks
+  headers: [webhook-id, webhook-timestamp, webhook-signature]
+  algorithm: HMAC-SHA256
+  secret: per-endpoint signing secret, issued in the webhook dashboard
+  replay_tolerance_recommended: 5 minutes
+  verify_against: raw request body
+  on_failure: reject with 401 and do not process
+delivery:
+  timeout: 15 seconds
+  success: any 2xx
+  retry_schedule: [immediate, 5s, 5m, 30m, 2h, 5h, 10h, 10h]
+  attempts: 8
+  retried_on: [4xx except 410, 5xx, network timeout, connection failure]
+  permanent_failure: 410 Gone (never retried — use to disable an endpoint)
+  auto_disable: after 5 consecutive days of total delivery failure
+  re_enable: manual, from the webhook dashboard
+subscription:
+  default: all events
+  filtering: subscribe to specific event types per endpoint
+event_count: 11
+events:
+- name: chargeback.created
+  operationId: chargeback.created
+  summary: Triggered when a new chargeback is received for the merchant
+  description: >-
+    Fires immediately when a new chargeback arrives from any connected PSP. The
+    payload carries all chargeback data available at creation.
+- name: chargeback.updated
+  operationId: chargeback.updated
+  summary: Triggered when a chargeback is updated
+- name: chargeback.status.updated
+  operationId: chargeback.status.updated
+  summary: Triggered when a chargeback's PSP status update is received
+- name: chargeback.evidence.submitted
+  operationId: chargeback.evidence.submitted
+  summary: Triggered when evidence is successfully submitted to the PSP
+  outcome_field: status (succeeded | failed)
+  pairs_with: EvidenceController_submitEvidence
+- name: chargeback.accepted
+  operationId: chargeback.accepted
+  summary: Triggered when a chargeback acceptance is confirmed by the PSP
+  outcome_field: status (succeeded | failed)
+  pairs_with: ChargebackItemController_acceptChargeback
+- name: pre_chargeback_alert.received
+  operationId: pre_chargeback_alert.received
+  summary: Triggered when a new pre-chargeback alert is received from CDRN, RDR or Ethoca
+- name: pre_chargeback_alert.refund.succeeded
+  operationId: pre_chargeback_alert.refund.succeeded
+  summary: Triggered when the transaction linked to a refunded alert was refunded through the PSP
+- name: pre_chargeback_alert.refund.failed
+  operationId: pre_chargeback_alert.refund.failed
+  summary: Triggered when a refund alert fails to be processed
+- name: pre_chargeback_alert.transaction_matched
+  operationId: pre_chargeback_alert.transaction_matched
+  summary: Triggered when an inbound alert is matched to an underlying transaction
+  opt_in: true
+  gate: additional_event_types account configuration, set by Justt
+- name: subscription.cancel_immediately.success
+  operationId: subscription.cancel_immediately.success
+  summary: Triggered when a CRM subscription was cancelled successfully after a refund
+  integrations: [Chargebee, Recurly]
+- name: subscription.cancel_immediately.failed
+  operationId: subscription.cancel_immediately.failed
+  summary: Triggered when cancelling a CRM subscription failed after a refund
+  failure_fields: [failureCode, failureReason]
+  note: >-
+    The refund succeeded but the cancellation did not; Justt flags the alert as
+    Action Required for manual follow-up. The only event carrying a structured
+    failure code.
+schemas:
+  count: 13
+  names:
+  - BaseWebhookPayload
+  - ChargebackDto
+  - AcceptedChargebackPayloadDto
+  - ISubmitedEvidencePayload
+  - ExternalAlertResponseDto
+  - RefundAlertSucceededDto
+  - RefundAlertSucceededPspDetailsDto
+  - RefundAlertFailedDto
+  - RefundAlertFailedPspDetailsDto
+  - MatchedTransactionDto
+  - AlertTransactionMatchedDto
+  - CancelSubscriptionSuccessDto
+  - CancelSubscriptionFailureDto

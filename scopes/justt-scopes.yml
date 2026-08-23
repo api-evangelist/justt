@@ -1,0 +1,42 @@
+generated: '2026-08-23'
+method: probed
+source: https://justt.ai/.well-known/oauth-authorization-server
+applies_to: MCP endpoint only
+note: >-
+  The Justt REST API and Pre-Chargeback Alerts API declare NO oauth2 security
+  scheme and publish no scope or permission model — a bearer API key carries full
+  privilege (see authentication/justt-authentication.yml). The only OAuth surface
+  Justt exposes is the MCP endpoint on its WordPress host, whose RFC 8414 metadata
+  declares a single scope. That is what is recorded here; it is discovered by
+  probe, not documented by Justt, and it does not govern the chargeback API.
+docs: null
+schemes:
+- name: mcp-oauth
+  source: well-known/justt-oauth-authorization-server.json
+  issuer: https://justt.ai
+  flows:
+  - flow: authorizationCode
+    authorizationUrl: https://justt.ai/oauth/authorize
+    tokenUrl: https://justt.ai/oauth/token
+    revocationUrl: https://justt.ai/oauth/revoke
+    pkce: S256
+    token_endpoint_auth_methods: [none]
+scopes:
+- scope: mcp
+  description: >-
+    The single scope advertised by Justt's authorization-server metadata, and the
+    only scope named by the protected-resource document for
+    https://justt.ai/wp-json/mcp/mcp-oauth-server. No finer-grained scope is
+    published; what it grants could not be determined because tools/list returns
+    HTTP 401.
+  flows: [authorizationCode]
+  sources:
+  - well-known/justt-oauth-authorization-server.json
+  - well-known/justt-oauth-protected-resource.json
+x-evidence:
+  fetched: '2026-08-23'
+  urls:
+  - url: https://justt.ai/.well-known/oauth-authorization-server
+    status: 200
+  - url: https://justt.ai/.well-known/oauth-protected-resource
+    status: 200

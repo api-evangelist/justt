@@ -1,0 +1,46 @@
+generated: '2026-08-23'
+method: searched
+source: https://developers.justt.ai/docs/rate-limit
+docs: https://developers.justt.ai/docs/rate-limit
+limit_count: 1
+rate_limits:
+- scope: per-key
+  window: 60s
+  limit: 1000
+  unit: requests
+  burst: null
+  status_on_exhaustion: 429
+  description: >-
+    "You can make up to 1000 requests per minute." Justt describes this as an upper
+    boundary and says limits are monitored and adjusted; increases are handled by
+    support rather than published as tiers.
+  source: https://developers.justt.ai/docs/rate-limit
+response_headers:
+  documented: false
+  headers: []
+  note: >-
+    Justt documents the numeric limit and the 429 status but publishes NO
+    rate-limit response headers — no X-RateLimit-*, no RateLimit-* (RFC 9331),
+    no Retry-After. An agent cannot read remaining budget or a reset time from a
+    response; it can only observe the 429 after the fact. This is the single
+    largest runtime-signal gap in an otherwise well-documented API.
+payload_limits:
+- kind: bulk-size
+  limit: 100
+  unit: items per request
+- kind: body-size
+  limit: 1
+  unit: MB
+  applies_to: non-file-upload endpoints
+  note: file upload limits are documented separately in the File Upload Guide
+- kind: filename-length
+  limit: 100
+  unit: characters
+environment_note: >-
+  "Rate limits apply separately to sandbox and production."
+  Source https://developers.justt.ai/docs/sandbox-environment
+guidance:
+  retry_strategy: >-
+    Justt recommends a retry strategy for 5XX responses and points at a
+    "Handling Rate Limiting Gracefully" guide for 429s.
+  source: https://developers.justt.ai/docs/error-handling

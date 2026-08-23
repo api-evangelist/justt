@@ -1,0 +1,27 @@
+generated: '2026-08-23'
+method: generated
+source: >-
+  openapi/justt-rest-api-openapi-original.json,
+  openapi/justt-pre-chargeback-alerts-openapi-original.json,
+  sandbox/justt-sandbox.yml
+note: >-
+  Authored by API Evangelist against Justt's published operationIds; every id was
+  verified verbatim in the referenced specs. Sandbox example values are quoted from
+  Justt's own sandbox guide.
+workflows:
+- file: justt-submit-evidence.yml
+  workflowId: submitEvidenceForChargeback
+  title: Submit evidence for a Justt chargeback
+  summary: Read a chargeback, upload an evidence file, submit it, and poll to a terminal state.
+- file: justt-triage-and-decide.yml
+  workflowId: triageAndDecide
+  title: Triage Justt chargebacks and set the representment decision
+  summary: List needs_response chargebacks, read Justt's Fight/Accept recommendation, enrich, then set should-fight. Acceptance is excluded because it is irreversible.
+- file: justt-alert-to-outcome.yml
+  workflowId: alertToOutcome
+  title: Work a Justt pre-chargeback alert to a reported outcome
+  summary: Two-source workflow — alerts are read from the Alerts API and the outcome is written through the REST API.
+- file: justt-sandbox-lifecycle.yml
+  workflowId: sandboxChargebackLifecycle
+  title: Drive a chargeback through its lifecycle in the Justt sandbox
+  summary: Create, advance and resolve a test chargeback to validate webhook handling end to end.

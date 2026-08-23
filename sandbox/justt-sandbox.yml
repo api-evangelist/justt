@@ -1,0 +1,128 @@
+generated: '2026-08-23'
+method: searched
+source: https://developers.justt.ai/docs/sandbox-environment
+docs:
+  overview: https://developers.justt.ai/docs/test-your-integration
+  sandbox: https://developers.justt.ai/docs/sandbox-environment
+  past_data: https://developers.justt.ai/docs/use-past-data
+available: true
+environments:
+- name: production
+  base_url: https://api.justt.ai/v1
+- name: sandbox
+  base_url: https://api.justt.ai/v1/sandbox
+  isolated: true
+separation:
+  model: separate-token
+  key_prefix: null
+  statement: >-
+    "Sandbox and production use separate tokens. You obtain a token the same way in
+    both environments, but the token itself is environment-specific."
+  issuance: hub → Integrations → API Integration
+  note: >-
+    Justt does NOT publish a distinguishing key prefix (no test_/live_ convention),
+    so a client cannot tell from the token alone which environment it is pointed at.
+    Separation is by value, not by shape.
+testing_approaches:
+- name: Use past data
+  description: >-
+    Query the merchant's own historical chargebacks from before the go-live date.
+    Best for validating authentication, date-range queries, pagination and response
+    handling against real data.
+  docs: https://developers.justt.ai/docs/use-past-data
+- name: Sandbox environment
+  description: >-
+    Isolated environment to simulate the full chargeback lifecycle — create test
+    chargebacks, drive them through statuses, and validate webhook handling.
+  docs: https://developers.justt.ai/docs/sandbox-environment
+fixture_tooling:
+  operation: SandboxController_uploadRawData
+  method: POST
+  path: /sandbox/raw-data
+  description: >-
+    The sandbox is driven by uploading raw PSP data in the PSP's own native format.
+    There is no fixture library or magic-value table; the merchant supplies a
+    realistic PSP payload and Justt ingests it as if it had arrived from the
+    processor.
+  required_fields:
+  - name: dataSource
+    description: PSP name — stripe, paypal, braintree, adyen, justt_sandbox
+  - name: dataSourceVersion
+    description: API version of the data source, e.g. "2024-06-20"
+  - name: dataType
+    description: chargebacks | transactions | refunds | early_fraud_warnings | card_checks | payment_actions | issuer_notes
+  - name: integrationId
+    description: Integration ID, provided by Justt
+  - name: requestTimeStamp
+    description: ISO 8601 timestamp of the request
+  - name: rawData
+    description: PSP-specific chargeback object
+lifecycle_simulation:
+  mechanism: >-
+    Re-post the same rawData id with a different status value; each transition
+    fires the corresponding webhook.
+  stripe_statuses:
+  - status: needs_response
+    meaning: Initial state — merchant must respond
+    webhook: true
+  - status: under_review
+    meaning: Evidence submitted, awaiting decision
+    webhook: true
+  - status: won
+    meaning: Merchant won the dispute
+    webhook: true
+  - status: lost
+    meaning: Merchant lost the dispute
+    webhook: true
+  published_test_values:
+    note: >-
+      Values below are quoted verbatim from Justt's published sandbox guide. They
+      are illustrative identifiers in Stripe dispute shape, not credentials.
+    dispute_id: du_test_needs_response_001
+    charge_id: ch_test_payment_001
+    payment_intent: pi_test_intent_001
+    amount: 12500
+    currency: usd
+    reason: fraudulent
+    card_brand: visa
+    case_type: chargeback
+    network_reason_code: '10.4'
+    recommended_unique_id_convention: du_sandbox_test_001
+  multi_psp:
+    supported: [stripe, paypal, braintree]
+    note: >-
+      Only the Stripe payload is worked through in full in the docs; PayPal and
+      Braintree are named as supported with a pointer to each PSP's own object
+      format.
+webhook_testing:
+  supported: true
+  flow:
+  - Configure webhook endpoints in the Justt dashboard
+  - POST /sandbox/raw-data with status needs_response
+  - Confirm the creation webhook arrived
+  - Re-post with under_review and confirm the status-change webhook
+  - Re-post with won or lost and confirm the final webhook
+  additional_docs: https://developers.justt.ai/docs/test-webhook-endpoints
+  signature_note: >-
+    Justt advises validating webhook signatures in sandbox before deploying to
+    production — the same webhook-id / webhook-timestamp / webhook-signature
+    verification as production.
+test_clocks:
+  supported: false
+  note: >-
+    No time simulation or test-clock facility. Time is advanced only by re-posting
+    data with later requestTimeStamp values.
+limitations:
+- Sandbox data is isolated and does not appear in production
+- Production historical data is not available in sandbox
+- Some advanced features may behave differently in sandbox
+- Rate limits apply separately to sandbox and production
+console:
+  url: https://app.justt.ai/
+  name: Justt Hub (CustomerHub)
+  note: >-
+    The hub is the authenticated console where API keys, webhook endpoints and
+    signing secrets, PSP integrations and the data-points list are managed. Justt
+    also publishes a "Try it out!" page describing an in-portal request runner on
+    the developer portal itself.
+  try_it_out: https://developers.justt.ai/docs/try-it-out

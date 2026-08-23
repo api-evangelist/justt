@@ -1,0 +1,134 @@
+# Justt Documentation
+
+> justt.ai developers portal
+
+Append .md to any documentation page URL to get its markdown version.
+
+## Guides
+- [Introduction](https://developers.justt.ai/docs/getting-started.md)
+- [Authentication](https://developers.justt.ai/docs/authentication.md)
+- [Multiple Merchants Set Up - 'Reference Accounts'](https://developers.justt.ai/docs/reference-accounts.md)
+- [Responses](https://developers.justt.ai/docs/responses.md)
+- [Data Conventions](https://developers.justt.ai/docs/data-conventions.md)
+- [Customized API Params](https://developers.justt.ai/docs/customized-api-params.md): Understanding Customization
+- [Pagination](https://developers.justt.ai/docs/pagination.md)
+- [Date Range Filtering](https://developers.justt.ai/docs/date-range-filtering.md)
+- [Response Order](https://developers.justt.ai/docs/response-order.md)
+- [Error Handling](https://developers.justt.ai/docs/error-handling.md)
+- [Rate Limit](https://developers.justt.ai/docs/rate-limit.md): Learn about API rate limits and how to work with them.
+- [Chargebacks](https://developers.justt.ai/docs/chargebacks.md)
+- [Transactions](https://developers.justt.ai/docs/transactions.md)
+- [Try it out!](https://developers.justt.ai/docs/try-it-out.md): Exploring the capabilities of our APIs is a breeze through our developer portal.
+- [Test Your Integration](https://developers.justt.ai/docs/test-your-integration.md): Two approaches for testing your Justt API integration
+- [Use past data](https://developers.justt.ai/docs/use-past-data.md): This guide explains how to test your integration with Justt's, including important information about data availability and handling dates.
+- [Sandbox Environment](https://developers.justt.ai/docs/sandbox-environment.md): The Justt Sandbox environment allows you to test the complete chargeback lifecycle without affecting production data or incurring real costs. This testing environment enables you to simulate chargebacks, move them through different statuses, and validate your webhook integrations.
+- [Contact Us](https://developers.justt.ai/docs/contact-us.md)
+- [Justt.ai Status Page](https://developers.justt.ai/docs/justtai-status-page.md)
+- [File Upload Guide](https://developers.justt.ai/docs/file-upload-guide.md)
+- [Screenshot upload guide](https://developers.justt.ai/docs/screenshot-upload-guide.md)
+- [Evidence Upload Guide](https://developers.justt.ai/docs/evidence-upload-guide.md): How to upload a file of type evidence to the system
+- [Webhook - Introduction](https://developers.justt.ai/docs/webhook-introduction.md): Webhooks are how services notify each other of events
+- [Add a Webhook Endpoint](https://developers.justt.ai/docs/add-a-webhook-endpoint.md): How to Add a Webhook Endpoint
+- [Webhook Events & Event Types](https://developers.justt.ai/docs/webhook-events-event-types.md)
+- [Signature Verification](https://developers.justt.ai/docs/signature-verification.md)
+- [Test Webhook Endpoints](https://developers.justt.ai/docs/test-webhook-endpoints.md)
+- [Webhook Retry Mechanism](https://developers.justt.ai/docs/webhook-retry-mechanism.md)
+- [Troubleshooting & Failure Recovery](https://developers.justt.ai/docs/troubleshooting-failure-recovery.md)
+- [Webhook Advanced Features](https://developers.justt.ai/docs/webhook-advanced-features.md): This guide covers the advanced configuration options available for webhooks in our system, allowing you to customize webhook behavior for complex integration scenarios.
+- [Justt Webhook Transformations](https://developers.justt.ai/docs/justt-webhook-transformations.md): This guide explains how to write and implement webhook transformations in the Justt system, allowing you to modify webhook behavior, payloads, and routing before delivery.
+- [Enriching Chargebacks data through Justt API](https://developers.justt.ai/docs/enrichment-data-submission-for-chargebacks.md): High level overview of our API for enriching chargebacks with additional data
+- [Using Justt API](https://developers.justt.ai/docs/using-justt-api.md): Create full flow without the need for extra integration with any PSP
+- [Using Justt Webhooks](https://developers.justt.ai/docs/using-justt-webhooks.md): Start enriching process by events
+- [Frequently Asked Questions](https://developers.justt.ai/docs/frequently-asked-questions.md): Your Go-To Guide for Popular Questions
+- [Chargeback Lifecycle and Status Guide](https://developers.justt.ai/docs/chargeback-lifecycle-and-status-guide.md)
+- [Accept Chargeback Process](https://developers.justt.ai/docs/accept-chargeback-process.md): How to accept chargeback
+- [Bulk Onboarding API - Introduction](https://developers.justt.ai/docs/bulk-onboarding-introduction.md)
+- [Prevention Tools (overview)](https://developers.justt.ai/docs/prevention-tools-overview.md)
+- [Enrichment Data Points](https://developers.justt.ai/docs/enrichment-data-points.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Ticketing Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-ticketing-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Financial Services Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-financial-services-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Retail\Delivery Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-retail-and-delivery-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The SaaS Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-saas-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Crypto Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-crypto-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Hospitality Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-hospitality-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Airlines Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-airlines-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Gaming Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-gaming-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Enrichment Data Points For The Subscription Industry](https://developers.justt.ai/docs/enrichment-data-points-for-the-subscription-industry.md): Merchants can provide additional data points to enhance the quality of the evidence we generate and improve the recovery rates
+- [Supported Integrations With Payment Service Providers](https://developers.justt.ai/docs/supported-integrations-with-payment-service-providers.md)
+- [Integrating Visa CE 3.0 & Mastercard First Party Trust Fraud Protection](https://developers.justt.ai/docs/visa-ce-30-mastercard-fptp-evidence-guide.md): This guide explains how to implement automated fraud chargeback protection using Visa Compelling Evidence 3.0 (CE 3.0) and the Mastercard First Party Trust Program (FPTP). By matching past transaction data against each program's eligibility criteria, you can contest fraudulent disputes, reduce liability, and protect revenue.
+- [Adyen](https://developers.justt.ai/docs/adyen.md): How to provide Justt an access to your Adyen account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Amex](https://developers.justt.ai/docs/amex.md): How to provide Justt an access to your Amex account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Braintree](https://developers.justt.ai/docs/braintree.md): How to provide Justt an access to your Braintree account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Chase Paymentech](https://developers.justt.ai/docs/chase-paymentech.md): How to provide Justt an access to your Paymentech account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Checkout.com](https://developers.justt.ai/docs/checkout.md): How to provide Justt an access to your Checkout.com account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Elavon Payment Insider](https://developers.justt.ai/docs/elavon-payment-insider.md): How to provide Justt an access to your Elavon Payment Insider account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [First Data / Business Track](https://developers.justt.ai/docs/firstdata.md): How to provide Justt an access to your First Data / Business Track account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Nuvei](https://developers.justt.ai/docs/nuvei.md): To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Paypal](https://developers.justt.ai/docs/paypal.md): How to provide Justt access to your PayPal account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps. Once you get the required keys, insert them in the right place at the Integrations Page (CustomerHub) and complete your PSP connection.
+- [Shopify](https://developers.justt.ai/docs/shopify.md): How to provide Justt an access to your Shopify account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Stripe](https://developers.justt.ai/docs/stripe.md): To enable Justt to process and manage your chargebacks, please integrate your Stripe account with Justt by following these steps. Once you get the required keys, insert them in the right place at the Integrations Page (CustomerHub) and complete your PSP connection.
+- [Worldpay - CB911](https://developers.justt.ai/docs/worldpay-cb911.md): How to provide Justt an access to your Worldpay - CB911 account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Worldpay - Vantiv](https://developers.justt.ai/docs/worldpay-vantiv.md): How to provide Justt an access to your Worldpay - Vantiv account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [Worldpay - MAI (Merchant Admin Interface)](https://developers.justt.ai/docs/worldpay-mai.md): How to provide Justt an access to your Worldpay - MAI account. To enable Justt to process and manage your chargebacks, please integrate your PSP with Justt by following these steps.
+- [GetNet](https://developers.justt.ai/docs/getnet.md): To enable Justt to process and manage your chargebacks, please integrate your GetNet account with Justt by following these steps. Once you get the required credentials, insert them in the right place at the Integrations Page (CustomerHub) and complete your PSP connection.
+- [Recurly](https://developers.justt.ai/docs/recurly.md)
+- [AMEX](https://developers.justt.ai/docs/amex-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Adyen](https://developers.justt.ai/docs/adyen-extract.md): Retrieving data from ADYEN to support Justt’s historical data and ROI analysis is easy. You will then compile the data into a single report in order for our team to expedite your customized ROI analysis.
+- [Braintree](https://developers.justt.ai/docs/braintree-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [BusinessTrack/First data](https://developers.justt.ai/docs/firstdata-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Chase Paymentech](https://developers.justt.ai/docs/chase-paymentech-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Checkout](https://developers.justt.ai/docs/checkout-extract.md): Justt’s chargeback data and ROI analysis provides you with a comprehensive and accurate view of your actual win and recovery rate performance based on your organization’s historical data. You will realize clarity in your current chargeback exposure, as well as opportunity revenue Justt can help you recover through automating your chargeback responses and helping you optimize win rates.  Retrieving data from CHECKOUT.COM to support Justt’s historical data and ROI analysis is easy, simply follow the steps below.
+- [dLocal](https://developers.justt.ai/docs/dlocal-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Ebanx](https://developers.justt.ai/docs/ebanx.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Paypal](https://developers.justt.ai/docs/paypal-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Discover](https://developers.justt.ai/docs/discover-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Elavon Payment Insider](https://developers.justt.ai/docs/elavon-payment-insider-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Global Payments](https://developers.justt.ai/docs/globalpayments.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required output : A CSV file , including the following parameters:
+- [Nuvei](https://developers.justt.ai/docs/nuvei-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Shopify](https://developers.justt.ai/docs/shopify-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Stripe](https://developers.justt.ai/docs/stripe-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP.
+- [Worldpay CB911](https://developers.justt.ai/docs/worldpay-cb911-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Worldpay IQ](https://developers.justt.ai/docs/worldpay-iq-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required data for a full analysis should be provided in a CSV file containing the following parameters:
+- [Worldpay- MAI](https://developers.justt.ai/docs/worldpay-mai-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP.
+- [Worldpay- Vantiv](https://developers.justt.ai/docs/worldpay-vantiv-extract.md): To ensure an accurate ROI analysis, Justt requires your chargeback data exactly as received from the PSP. The required output : A CSV file , including the following parameters:
+- [GraphQL to REST API Migration Guide](https://developers.justt.ai/docs/graphql-to-rest-api-migration-guide.md): This guide outlines the steps required to migrate from the GraphQL API to the new REST API for chargeback operations
+- [Legacy API to REST API Migration Guide](https://developers.justt.ai/docs/legacy-api-to-rest-api-migration-guide.md): This guide outlines the steps required to migrate from the legacy API to the new REST API for chargeback operations
+
+## API Reference
+- [Upsert transaction](https://developers.justt.ai/reference/transactioncontroller_createtransaction.md): Creates or updates a transaction record for additional purchases or activities made by a customer who has an existing chargeback case. This helps provide additional context for dispute resolution.
+- [Get chargeback](https://developers.justt.ai/reference/chargebackitemcontroller_getchargeback.md): Retrieving a single chargeback by id
+- [Update chargeback](https://developers.justt.ai/reference/chargebackitemcontroller_updatechargeback.md): To see your full request body parameters names please check you data boost page at the hub https://app.justt.ai/datapoints-list
+- [Should Justt fight for a given chargeback](https://developers.justt.ai/reference/chargebackitemcontroller_markshouldfight.md): By default, Justt will represent or not represent chargebacks as agreed in your contract. Use this endpoint to override this for a specific chargeback
+- [Accept chargeback](https://developers.justt.ai/reference/chargebackitemcontroller_acceptchargeback.md): Accepts a chargeback, indicating you will not dispute it. This action acknowledges the validity of the customer's claim and allows the funds to be returned to them. The chargeback must have an open status and your payment processor must support acceptance. Once accepted, the chargeback cannot be reversed.
+- [Get chargebacks by search criteria](https://developers.justt.ai/reference/chargebackcontroller_findall.md): Retrieving a array of chargebacks matching the given criteria
+- [Get the status of an accept chargeback](https://developers.justt.ai/reference/chargebackitemcontroller_getacceptchargebackstatus.md): Returns the current status of an accept chargeback for a chargeback. Accept chargeback is an asynchronous process, so this endpoint allows you to check the real-time state of the accept (e.g., in progress, completed, failed).
+- [Request to submit evidence for a chargeback](https://developers.justt.ai/reference/evidencecontroller_submitevidence.md): Submits a request to attach evidence to a chargeback. The evidence will be processed asynchronously; the request will return immediately with a submission ID, and the evidence will be submitted in the background, the process will take up to 24 hours to complete, depending on the payment processor.
+- [Get the status of a evidence submission](https://developers.justt.ai/reference/evidencecontroller_getevidencesubmissionstatus.md): Returns the current status of an evidence submission for a chargeback. Evidence submission is an asynchronous process, so this endpoint allows you to check the real-time state of the submission (e.g., in progress, completed, failed).
+- [Upload a file](https://developers.justt.ai/reference/filescontroller_create.md): Upload a file to the Justt system. Use multipart/form-data with the file in a field named 'file'. Supported file types include documents, images, and other evidence files. For more details, visit https://developers.justt.ai/docs/file-upload-guide
+- [Request data subject removal](https://developers.justt.ai/reference/datasubjectscontroller_requestdatasubjectremoval.md): Request to remove personal data from the Justt system in compliance with data protection regulations (GDPR, CCPA). This endpoint initiates the data deletion process for a specified customer.
+- [Get merchants](https://developers.justt.ai/reference/merchantscontroller_getmerchants.md): Retrieve a list of merchants with optional filtering and pagination
+- [Deactivate merchant](https://developers.justt.ai/reference/merchantscontroller_deactivatemerchant.md): Deactivate a merchant (note: merchant is not removed, only deactivated)
+- [Create merchant](https://developers.justt.ai/reference/merchantscontroller_createmerchant.md): Create a new merchant with business profile information
+- [Get merchant by ID](https://developers.justt.ai/reference/merchantscontroller_getmerchant.md): Retrieve a single merchant by its UUID
+- [Get integrations](https://developers.justt.ai/reference/integrationscontroller_getintegrations.md): Retrieve a list of integrations with optional filtering and pagination
+- [Create integration](https://developers.justt.ai/reference/integrationscontroller_createintegration.md): Create a new payment integration
+- [Deactivate integration](https://developers.justt.ai/reference/integrationscontroller_deactivateintegration.md): Deactivate an integration (note: integration is not removed, only deactivated)
+- [Get integration by ID](https://developers.justt.ai/reference/integrationscontroller_getintegration.md): Retrieve a single integration by its ID
+- [Upload raw data in sandbox environment](https://developers.justt.ai/reference/sandboxcontroller_uploadrawdata.md): This endpoint allows you to upload raw transaction/chargeback data in the sandbox environment for testing purposes. The data will be processed asynchronously and stored in the system.
+- [Chargeback Created webhook](https://developers.justt.ai/reference/chargebackcreated.md): Triggered when a new chargeback is received for the merchant.
+- [Chargeback Status Updated webhook](https://developers.justt.ai/reference/chargebackstatusupdated.md): Triggered when a chargeback status update is received.
+- [Chargeback Updated webhook](https://developers.justt.ai/reference/chargebackupdated.md): Triggered when a chargeback is updated.
+- [Chargeback Evidence Submitted webhook](https://developers.justt.ai/reference/chargebackevidencesubmitted.md): Triggered when evidence is successfully submitted to the PSP.
+- [Chargeback Accepted webhook](https://developers.justt.ai/reference/chargebackaccepted.md): Triggered when a chargeback acceptance is successfully confirmed by the PSP
+- [Pre Chargeback Alert Received webhook](https://developers.justt.ai/reference/pre_chargeback_alertreceived.md): Triggered when a new pre chargeback alert is received from either CDRN, RDR or Ethoca.
+- [Refund Alert Succeeded webhook](https://developers.justt.ai/reference/pre_chargeback_alertrefundsucceeded.md): Triggered when the linked transaction to a refunded alert was successfully refunded through the PSP
+- [Refund Alert Failed webhook](https://developers.justt.ai/reference/pre_chargeback_alertrefundfailed.md): Triggered when a refund alert is failed to be processed
+- [Alert Transaction Matched webhook](https://developers.justt.ai/reference/pre_chargeback_alerttransaction_matched.md): Triggered when an inbound pre-chargeback alert was successfully matched to an underlying transaction. Opt-in only — gated by the additional_event_types account configuration.
+- [Cancel Subscription Success webhook](https://developers.justt.ai/reference/subscriptioncancel_immediatelysuccess.md): Triggered when a CRM subscription was successfully cancelled after a refund (e.g. Chargebee or Recurly).
+- [Cancel Subscription Failure webhook](https://developers.justt.ai/reference/subscriptioncancel_immediatelyfailed.md): Triggered when cancelling a CRM subscription failed after a refund (e.g. subscription not found or already cancelled).
+- [Get alerts by search criteria](https://developers.justt.ai/reference/alertcontroller_findall.md): Retrieving an array of pre-chargeback alerts matching the given criteria. In addition to this endpoint, we also support push notifications that share alerts with you in real-time. Contact your account manager to set up for immediate alert notifications.
+- [Get alert](https://developers.justt.ai/reference/alertcontroller_findone.md): Retrieving a single pre-chargeback alert by id
+- [Create alert outcome](https://developers.justt.ai/reference/prechargebackalertscontroller_createoutcome.md): Create and record the outcome of a pre-chargeback alert (e.g., refunded, resolved, accepted). Pre-chargeback alerts are early warnings that allow merchants to take action before a chargeback is filed.
+
+## Recipes
+- [Enriching Chargebacks - Full Flow](https://developers.justt.ai/recipes/enriching-chargebacks-full-flow-1.md)

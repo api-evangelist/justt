@@ -1,0 +1,90 @@
+generated: '2026-08-23'
+method: searched
+source: >-
+  https://developers.justt.ai/docs/getting-started,
+  https://developers.justt.ai/docs/graphql-to-rest-api-migration-guide,
+  https://developers.justt.ai/docs/legacy-api-to-rest-api-migration-guide,
+  https://developers.justt.ai/docs/justtai-status-page
+versioning:
+  scheme: uri-path
+  current: v1
+  base: https://api.justt.ai/v1
+  spec_versions:
+    rest-api: 1.0.0 (OpenAPI 3.0.0)
+    pre-chargeback-alerts: 1.0.0 (OpenAPI 3.0.0)
+    webhook-events: 1.0.0 (OpenAPI 3.1.0)
+  docs: https://developers.justt.ai/docs/getting-started
+  note: >-
+    Only one API version has ever been published under this scheme. There is no
+    dated-version or version-header mechanism.
+deprecation:
+  policy_url: https://developers.justt.ai/docs/legacy-api-to-rest-api-migration-guide
+  formal_policy: false
+  sunset_header: unknown
+  deprecation_header: unknown
+  superseded_surfaces:
+  - name: Justt GraphQL API
+    status: superseded
+    replacement: Justt REST API (https://api.justt.ai/v1)
+    migration_guide: https://developers.justt.ai/docs/graphql-to-rest-api-migration-guide
+    verification:
+      probe: https://api.justt.ai/graphql
+      http_status: 404
+      note: >-
+        No GraphQL surface answers on the API host today, so the migration is
+        effectively complete rather than in progress.
+  - name: Justt Legacy API
+    status: superseded
+    replacement: Justt REST API (https://api.justt.ai/v1)
+    migration_guide: https://developers.justt.ai/docs/legacy-api-to-rest-api-migration-guide
+  note: >-
+    Justt publishes NO written deprecation policy — no notice period, no sunset
+    commitment, no RFC 8594 Sunset/Deprecation header contract. What it does
+    publish is two per-surface migration guides for the GraphQL and legacy APIs
+    the current REST API replaced. That is real, dated, actionable deprecation
+    communication, and it is the basis for the Deprecation pointer in apis.yml —
+    but a consumer still cannot learn from any Justt document how much warning a
+    future breaking change would carry.
+deprecated_operations: []
+deprecated_operations_note: >-
+  No operation in either OpenAPI definition carries `deprecated: true`.
+sla:
+  url: null
+  uptime_target: null
+  note: >-
+    No public SLA or uptime commitment. Justt's platform is sold under enterprise
+    contract, and no service-level document is published on justt.ai or on the
+    developer portal.
+status_page:
+  url: https://status.justt.ai/
+  platform: Atlassian Statuspage
+  machine_readable:
+  - url: https://status.justt.ai/api/v2/status.json
+    status: 200
+    note: 'observed 2026-08-23: {"indicator":"none","description":"All Systems Operational"}'
+  - url: https://status.justt.ai/api/v2/components.json
+    status: 200
+  - url: https://status.justt.ai/history.rss
+    status: 200
+  subscriptions: [email, sms, slack, webhook, rss]
+  docs: https://developers.justt.ai/docs/justtai-status-page
+  note: >-
+    A well-run status surface: a documented status page with per-component
+    indicators, an incident history, subscription by five channels including
+    webhook, and the full Statuspage v2 JSON API reachable unauthenticated.
+changelog:
+  url: null
+  note: >-
+    No dated changelog is published. developers.justt.ai/changelog, /docs/changelog
+    and justt.ai/changelog all return 404, and no changelog entry appears in the
+    llms.txt documentation index. Individual doc pages do carry an `updatedAt`
+    timestamp in their markdown frontmatter — the sandbox guide was last touched
+    2026-06-01, the webhook events page 2026-08-03 — which is the only per-change
+    dating available. No ChangeLog pointer is emitted.
+support:
+  contact: https://developers.justt.ai/docs/contact-us
+  account_management: >-
+    Several capabilities (immediate alert push notifications, the opt-in
+    pre_chargeback_alert.transaction_matched event, integration IDs, rate-limit
+    increases) are gated behind "contact your account manager" rather than
+    self-service.

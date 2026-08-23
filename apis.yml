@@ -1,23 +1,168 @@
 aid: justt
 name: Justt
-description: 'Justt is a company surfaced via the API Evangelist harvest backlog (source: secondary-market)
-  and added to the network as a stub for full-pipeline profiling.'
+description: Justt is an AI-native chargeback management and dispute-representment platform for high-volume
+  merchants. Its Dynamic Arguments engine assembles evidence-backed representment packages for card disputes
+  across 30+ payment service providers (Stripe, Adyen, PayPal, Braintree, Checkout.com, Worldpay, Chase
+  Paymentech, Nuvei and others), and it also handles pre-chargeback alerts from Ethoca, Verifi CDRN and
+  RDR. Justt publishes a public developer portal at developers.justt.ai with three OpenAPI definitions
+  — a REST API for chargebacks, transactions, evidence, files, merchants and integrations; a Pre-Chargeback
+  Alerts API; and an OpenAPI 3.1 webhook-events specification covering eleven signed event types — plus
+  an RFC 9727 /.well-known/api-catalog, an llms.txt documentation index, a sandbox environment, and a
+  Vanta-hosted trust center.
 url: https://raw.githubusercontent.com/api-evangelist/justt/refs/heads/main/apis.yml
+image: https://justt.ai/wp-content/uploads/2025/03/blog-7-1.jpg
 x-type: company
 x-source: harvest:secondary-market
-x-tier: stub
-x-tier-reason: harvest
 specificationVersion: '0.20'
 created: '2026-08-23'
 modified: '2026-08-23'
 tags:
 - Company
-apis: []
+- Payments
+- Chargebacks
+- Disputes
+- Fraud
+- Risk
+- Financial Services
+- E-Commerce
+- Artificial Intelligence
+- Webhooks
+apis:
+- aid: justt:rest-api
+  name: Justt REST API
+  description: The Justt REST API lets merchants read and manage chargebacks, enrich them with transaction
+    data and evidence files, decide whether Justt should fight or accept a dispute, manage merchants and
+    PSP integrations, record pre-chargeback alert outcomes, and request data-subject removal. Bearer API-key
+    authentication over HTTPS; JSON request and response bodies.
+  humanURL: https://developers.justt.ai/reference
+  baseURL: https://api.justt.ai/v1
+  image: https://justt.ai/wp-content/uploads/2025/03/blog-7-1.jpg
+  tags:
+  - Chargebacks
+  - Disputes
+  - Payments
+  - Evidence
+  - Merchants
+  properties:
+  - type: OpenAPI
+    url: openapi/justt-rest-api-openapi-original.json
+  - type: Documentation
+    url: https://developers.justt.ai/docs/getting-started
+  - type: APIReference
+    url: https://developers.justt.ai/reference
+- aid: justt:pre-chargeback-alerts
+  name: Justt Pre-Chargeback Alerts API
+  description: Justt official REST API for pre-chargeback alerts. Retrieve alerts sourced from Ethoca,
+    Verifi CDRN and RDR by search criteria or by id, so a merchant can refund or resolve a transaction
+    before it becomes a chargeback.
+  humanURL: https://developers.justt.ai/reference/alertcontroller_findall
+  baseURL: https://api.justt.ai/v1
+  tags:
+  - Pre-Chargeback Alerts
+  - Prevention
+  - Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/justt-pre-chargeback-alerts-openapi-original.json
+  - type: Documentation
+    url: https://developers.justt.ai/docs/prevention-tools-overview
+- aid: justt:webhook-events
+  name: Justt Webhook Events
+  description: OpenAPI 3.1 specification of the eleven webhook events Justt sends to merchant endpoints
+    — chargeback created/updated/status-updated, evidence submitted, chargeback accepted, pre-chargeback
+    alert received/refund succeeded/refund failed/transaction matched, and CRM subscription cancellation
+    success/failure. Payloads are signed HMAC-SHA256 and delivered with svix signature headers.
+  humanURL: https://developers.justt.ai/docs/webhook-introduction
+  baseURL: https://api.justt.ai/v1
+  tags:
+  - Webhooks
+  - Events
+  - Chargebacks
+  properties:
+  - type: OpenAPI
+    url: asyncapi/justt-webhook-events-openapi-original.json
+  - type: Webhooks
+    url: asyncapi/justt-webhook-events.yml
+  - type: Documentation
+    url: https://developers.justt.ai/docs/webhook-events-event-types
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/justt-agentic-access.yml
+- type: DomainSecurity
+  url: security/justt-domain-security.yml
+- type: Authentication
+  url: authentication/justt-authentication.yml
 - type: Website
-  url: https://www.hiive.com/securities/justt-stock
+  url: https://justt.ai/
+- type: DeveloperPortal
+  url: https://developers.justt.ai/
+- type: Documentation
+  url: https://developers.justt.ai/docs/getting-started
+- type: APIReference
+  url: https://developers.justt.ai/reference
+- type: GettingStarted
+  url: https://developers.justt.ai/docs/getting-started
+- type: Support
+  url: https://developers.justt.ai/docs/contact-us
+- type: Blog
+  url: https://justt.ai/blog/
+- type: Login
+  url: https://app.justt.ai/
+- type: TermsOfService
+  url: https://justt.ai/terms-of-use/
+- type: PrivacyPolicy
+  url: https://justt.ai/privacy-policy/
+- type: StatusPage
+  url: https://status.justt.ai/
+- type: TrustCenter
+  url: https://trust.justt.ai/
+- type: Compliance
+  url: https://trust.justt.ai/
+- type: APICatalog
+  url: well-known/justt-well-known.yml
+- type: WellKnown
+  url: well-known/justt-well-known.yml
+- type: MCPServer
+  url: mcp/justt-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/justt-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/justt-llms.txt
+- type: Overlay
+  url: overlays/justt-rest-api-overlay.yaml
+- type: Conformance
+  url: conformance/justt-conformance.yml
+- type: ErrorCatalog
+  url: errors/justt-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/justt-lifecycle.yml
+- type: Deprecation
+  url: https://developers.justt.ai/docs/legacy-api-to-rest-api-migration-guide
+- type: OAuthScopes
+  url: scopes/justt-scopes.yml
+- type: Sandbox
+  url: sandbox/justt-sandbox.yml
+- type: Conventions
+  url: conventions/justt-conventions.yml
+- type: DataModel
+  url: data-model/justt-data-model.yml
+- type: Webhooks
+  url: asyncapi/justt-webhook-events.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/justt-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/justt-rate-limits.yml
+- type: Arazzo
+  url: arazzo/_index.yml
+x-enrichment:
+  date: '2026-08-23'
+  status: enriched
+  artifacts_added: 38
+  pass: local-v1

@@ -1,0 +1,185 @@
+generated: '2026-08-23'
+method: derived
+source: >-
+  openapi/justt-rest-api-openapi-original.json,
+  openapi/justt-pre-chargeback-alerts-openapi-original.json,
+  asyncapi/justt-webhook-events-openapi-original.json
+docs: https://developers.justt.ai/docs/chargeback-lifecycle-and-status-guide
+identifiers:
+  style: UUID and PSP-native strings side by side
+  note: >-
+    Almost every entity carries TWO ids — Justt's own UUID and the identifier the
+    PSP assigned. Conflating them is the most likely integration bug: `id` on a
+    chargeback is Justt's UUID, `chargebackId` is the PSP's.
+  examples:
+  - entity: Chargeback
+    justt_id: id (UUID, e.g. 04318fb0-e4ff-4712-972e-4db99b3fb23c)
+    psp_id: chargebackId (e.g. QRZ54SXB4K6TF232)
+  - entity: Merchant
+    justt_id: merchantUuid (format uuid)
+    external_id: referenceId (e.g. MERCHANT_001)
+  - entity: Integration
+    justt_id: integrationId (e.g. 446655440000)
+    external_id: externalIdentifier (e.g. INT_001)
+  - entity: File
+    justt_id: fileId (e.g. file_1234567890)
+  - entity: EvidenceSubmission
+    justt_id: submitEvidenceId (e.g. sub_1234567890)
+entities:
+- name: Merchant
+  schema: MerchantResponseDto
+  root: true
+  fields: [merchantName, referenceId, status, merchantUuid]
+  status_enum: MerchantOverallStatus
+  operations:
+    list: MerchantsController_getMerchants
+    get: MerchantsController_getMerchant
+    create: MerchantsController_createMerchant
+    deactivate: MerchantsController_deactivateMerchant
+- name: Integration
+  schema: IntegrationResponseDto
+  fields: [integrationId, source, status, goLiveDate]
+  source_enum: SupportedPSP
+  status_enum: MerchantIntegrationStatusEnum
+  secret_types: IntegrationConnectionTypeEnum
+  operations:
+    list: IntegrationsController_getIntegrations
+    get: IntegrationsController_getIntegration
+    create: IntegrationsController_createIntegration
+    deactivate: IntegrationsController_deactivateIntegration
+- name: Chargeback
+  schema: ChargebackDto
+  central: true
+  fields: [id, chargebackId, referenceAccountId, integrationId, psp, pspStatus, status, lifecycleStage]
+  operations:
+    list: ChargebackController_findAll
+    get: ChargebackItemController_getChargeback
+    enrich: ChargebackItemController_updateChargeback
+    decide: ChargebackItemController_markShouldFight
+    accept: ChargebackItemController_acceptChargeback
+    accept_status: ChargebackItemController_getAcceptChargebackStatus
+- name: Transaction
+  schema: PostTransactionDto
+  fields: [chargebackId, transactionOrderItems]
+  operations:
+    upsert: TransactionController_createTransaction
+  note: >-
+    Transactions exist only as enrichment context hung off an EXISTING chargeback
+    case. There is no standalone transaction read surface.
+- name: File
+  schema: CreateFileResponseDto
+  fields: [fileId, checksum]
+  purpose_enum: PURPOSE
+  operations:
+    upload: FilesController_create
+- name: EvidenceSubmission
+  schema: EvidenceSubmissionStatusDto
+  fields: [submitEvidenceId, fileId, id, referenceAccountId, status, submittedAt, error]
+  status_enum: EvidenceSubmissionLifecycle
+  operations:
+    create: EvidenceController_submitEvidence
+    get: EvidenceController_getEvidenceSubmissionStatus
+- name: AcceptChargeback
+  schema: AcceptChargebackStatusDto
+  fields: [id, referenceAccountId, status, acceptedAt, error]
+  status_enum: EvidenceSubmissionLifecycle
+  operations:
+    create: ChargebackItemController_acceptChargeback
+    get: ChargebackItemController_getAcceptChargebackStatus
+- name: PreChargebackAlert
+  schema: AlertDto
+  spec: openapi/justt-pre-chargeback-alerts-openapi-original.json
+  provider_enum: ProviderName
+  operations:
+    list: AlertController_findAll
+    get: AlertController_findOne
+- name: AlertOutcome
+  schema: CreateOutcomeDto
+  fields: [providerName, alertId, refunded, outcome, comments]
+  outcome_enum: OutcomeStatus
+  refunded_enum: RefundedStatus
+  operations:
+    create: PreChargebackAlertsController_createOutcome
+- name: DataSubjectRemovalRequest
+  schema: DataSubjectRemovalRequestDto
+  fields: [email, firstName, lastName]
+  operations:
+    create: DataSubjectsController_requestDataSubjectRemoval
+- name: SandboxRawData
+  schema: RawDataRequestDto
+  fields: [dataSource, dataType, integrationId, requestTimeStamp, rawData]
+  data_type_enum: DataType
+  operations:
+    upload: SandboxController_uploadRawData
+relationships:
+- from: Merchant
+  to: Integration
+  kind: has_many
+  via: reference-account-id / merchant scope
+- from: Integration
+  to: Chargeback
+  kind: has_many
+  via: integrationId
+  note: ChargebackDto.integrationId names the integration that sourced the chargeback
+- from: Chargeback
+  to: Merchant
+  kind: belongs_to
+  via: referenceAccountId
+- from: Chargeback
+  to: Transaction
+  kind: has_many
+  via: chargebackId
+- from: Chargeback
+  to: EvidenceSubmission
+  kind: has_many
+  via: path parameter id on /chargebacks/{id}/evidence/submit
+- from: EvidenceSubmission
+  to: File
+  kind: has_one
+  via: fileId
+- from: Chargeback
+  to: AcceptChargeback
+  kind: has_one
+  via: path parameter id on /chargebacks/{id}/accept
+- from: PreChargebackAlert
+  to: AlertOutcome
+  kind: has_many
+  via: alertId
+- from: PreChargebackAlert
+  to: Transaction
+  kind: has_one
+  via: transaction matching (pre_chargeback_alert.transaction_matched event, MatchedTransactionDto)
+  optional: true
+enumerations:
+  LifecycleStage: [alert, inquiry, claim, chargeback, second_chargeback, third_chargeback, other]
+  InternalStatus: [waiting_for_data, building_evidence, pending_psp_results, not_represented]
+  PSPStatus: [needs_response, under_review, won, lost, not_applicable, evidence_not_submitted_by_psp, split, unknown]
+  EvidenceSubmissionLifecycle: [created, inProgress, failed, succeeded]
+  DisputeOptimizationResult: [Fight, Accept]
+  MerchantOverallStatus: [SetupIncomplete, Active, ScheduledForActivation, Inactive, IntegrationError, ReadyAwaitingGoLiveDate, ReadyScheduledGoLiveDate, AllIntegrationDown, AllIntegrationValidate, PartiallyActiveByError, PartiallyActiveByValidation]
+  MerchantIntegrationStatusEnum: [PENDING, SUCCESSFUL, FAILED, INACTIVE]
+  IntegrationConnectionTypeEnum: [APIKEY_ONLY, PUBLIC_SECRET_KEY, BASIC_AUTH, USERNAME_PASSWORD, HMAC, APIKEY, sftp]
+  DeactivationType: [postingDate, dueDate]
+  PURPOSE: [evidence_file, evidence_image]
+  DataType: [chargebacks, transactions, refunds, early_fraud_warnings, card_checks, payment_actions, issuer_notes]
+  ProviderName: [Verifi RDR, Verifi CDRN, Ethoca]
+  RefundedStatus: [refunded, not refunded, not settled]
+  SupportedPSP: [stripe, braintree, paypal, adyen, justt_sandbox]
+psp_coverage:
+  ingest_enum: PSP
+  count: 60
+  note: >-
+    The PSP enum on ingested data names roughly sixty processors (stripe, adyen,
+    paypal, braintree, checkout, worldpay variants, chase, nuvei, fiserv, elavon,
+    global_payments, square, klarna, paysafe, dlocal, ebanx, payu and more), while
+    SupportedPSP — the enum for integrations a merchant can CREATE through the API
+    — lists only five (stripe, braintree, paypal, adyen, justt_sandbox). The
+    asymmetry is real and worth knowing: Justt ingests from far more processors
+    than it lets you self-serve-connect over the API.
+notable:
+  dispute_optimization: >-
+    ChargebackDto exposes DisputeOptimizationResult (Fight | Accept) — Justt's own
+    ROI-based recommendation — and a minEnrichmentScore/maxEnrichmentScore filter
+    pair on the list endpoint. This is the product's machine-learning output
+    surfaced as a first-class, filterable field, and it is the natural input to an
+    agent deciding which disputes to escalate to a human.

@@ -1,0 +1,127 @@
+generated: '2026-08-23'
+method: searched
+source: >-
+  https://developers.justt.ai/docs/error-handling,
+  https://developers.justt.ai/docs/responses,
+  openapi/justt-rest-api-openapi-original.json
+docs: https://developers.justt.ai/docs/error-handling
+format: custom
+rfc9457: false
+media_type: application/json
+envelope:
+  schema: ErrorResponseDTO
+  fields:
+  - name: status
+    type: number
+    required: true
+    example: 500
+    description: Error status of the response, duplicating the HTTP status code
+  - name: message
+    type: string
+    required: true
+    example: Internal Server Error
+    description: Description of the error that occurred
+  - name: errorId
+    type: string
+    required: false
+    example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+    description: >-
+      A unique identifier you can provide to Justt support for a better
+      troubleshooting process
+  note: >-
+    Justt's published example in the docs uses the key `error` alongside `message`
+    and `errorId`, while the OpenAPI schema declares `status`, `message` and
+    `errorId`. The two shapes disagree; the spec is the machine-readable one and is
+    treated as authoritative here. Reported as a docs/spec drift.
+problems:
+- status: 400
+  title: Bad Request
+  meaning: Malformed syntax, invalid or incomplete request parameters
+  remediation: >-
+    Re-validate the request body against the schema. Note the API rejects empty
+    values (null/undefined) at validation — omit optional fields rather than
+    nulling them.
+  schema: ErrorResponseDTO
+  source_operations: all
+- status: 401
+  title: Unauthorized
+  meaning: Authentication failure — missing, invalid or expired API key
+  remediation: >-
+    Send Authorization: Bearer <api-key>. Reissue the key from the hub's API
+    Integration page. Sandbox and production keys are not interchangeable.
+  common_message: Invalid API key
+  source: https://developers.justt.ai/docs/error-handling
+- status: 403
+  title: Forbidden
+  meaning: Access to the requested resource is forbidden
+  remediation: >-
+    Check the reference-account-id header — the key may not be entitled to the
+    merchant account being addressed.
+  source: https://developers.justt.ai/docs/responses
+- status: 404
+  title: Not Found
+  meaning: The requested resource does not exist
+  remediation: Verify the chargeback, merchant, integration or file identifier.
+  schema: ErrorResponseDTO
+  variants:
+  - operation: MerchantsController_deactivateMerchant
+    example: '{"message": "Merchant not found", "statusCode": 404}'
+    note: >-
+      This operation returns statusCode rather than status — a third envelope
+      variant, inlined as an example in the spec instead of referencing
+      ErrorResponseDTO.
+- status: 413
+  title: Payload Too Large
+  meaning: The payload size exceeds the maximum limit
+  remediation: >-
+    Reduce payload size. Non-file endpoints cap at 1 MB; bulk requests cap at 100
+    items; file names cap at 100 characters.
+  source: https://developers.justt.ai/docs/rate-limit
+  note: Documented in the error reference but not declared on any operation in the spec.
+- status: 429
+  title: Too Many Requests
+  meaning: Rate limit exceeded (1000 requests per minute)
+  remediation: >-
+    Back off and retry. No Retry-After or RateLimit-* header is returned, so the
+    client must implement its own backoff.
+  source: https://developers.justt.ai/docs/rate-limit
+  note: Documented in the error reference but not declared on any operation in the spec.
+- status: 500
+  title: Internal Server Error
+  meaning: An unexpected server-side error
+  remediation: >-
+    Retry with exponential backoff — Justt explicitly recommends a retry strategy
+    for 5XX, describing them as typically temporary. Quote the errorId to support
+    if it persists. Note there is no idempotency key, so retries of write
+    operations are not provably safe.
+  schema: ErrorResponseDTO
+  source_operations: all
+coverage:
+  operations_total: 23
+  operations_with_4xx: 23
+  operations_with_5xx: 23
+  declared_statuses_in_spec: [400, 404, 500]
+  documented_only_statuses: [401, 403, 413, 429]
+  gap: >-
+    The spec declares only 400/404/500 on its operations, while the docs describe
+    401, 403, 413 and 429 as first-class outcomes. A client generated from the
+    OpenAPI alone will not have types for four of the seven documented failure
+    modes.
+async_failure_states:
+  note: >-
+    Two operations fail asynchronously rather than by HTTP status. Evidence
+    submission and chargeback acceptance both return 201 immediately and then move
+    through EvidenceSubmissionLifecycle (created | inProgress | failed | succeeded),
+    carrying a free-text `error` string on failure (published example: "Network
+    timeout"). There is no enumerated failure-code registry for these; poll
+    EvidenceController_getEvidenceSubmissionStatus and
+    ChargebackItemController_getAcceptChargebackStatus, or subscribe to the
+    chargeback.evidence.submitted and chargeback.accepted webhooks, whose payloads
+    carry status succeeded | failed.
+  webhook_failure_codes:
+    event: subscription.cancel_immediately.failed
+    fields: [failureCode, failureReason]
+    source: https://developers.justt.ai/docs/webhook-events-event-types
+    note: >-
+      The only event that carries a structured failure code. The code list itself
+      is not published.

@@ -1,0 +1,190 @@
+generated: '2026-08-23'
+method: searched
+source: >-
+  openapi/justt-rest-api-openapi-original.json,
+  asyncapi/justt-webhook-events-openapi-original.json,
+  https://developers.justt.ai/.well-known/api-catalog,
+  https://developers.justt.ai/docs/data-conventions,
+  https://developers.justt.ai/docs/signature-verification,
+  https://justt.ai/
+standards:
+- id: openapi-3.0
+  conforms: true
+  evidence: >-
+    openapi/justt-rest-api-openapi-original.json and
+    openapi/justt-pre-chargeback-alerts-openapi-original.json both declare
+    "openapi": "3.0.0" with populated paths and components.
+- id: openapi-3.1
+  conforms: true
+  evidence: >-
+    asyncapi/justt-webhook-events-openapi-original.json declares
+    "openapi": "3.1.0" and uses the 3.1 top-level `webhooks` object for all
+    eleven events — the correct modern way to describe outbound events in OpenAPI.
+- id: rfc9727-api-catalog
+  conforms: true
+  evidence: >-
+    https://developers.justt.ai/.well-known/api-catalog returns HTTP 200 with a
+    valid `linkset` carrying service-desc (application/vnd.oai.openapi+json) and
+    service-doc entries for all three definitions. Saved verbatim to
+    well-known/justt-api-catalog.json.
+  note: >-
+    Rare — this is the discovery document that made the other two specs findable.
+- id: rfc8414-oauth-authorization-server-metadata
+  conforms: true
+  evidence: >-
+    https://justt.ai/.well-known/oauth-authorization-server returns a valid RFC 8414
+    document (issuer, authorization_endpoint, token_endpoint, revocation_endpoint,
+    PKCE S256). Scoped to the MCP surface on the WordPress host, not to api.justt.ai.
+- id: rfc9728-oauth-protected-resource-metadata
+  conforms: true
+  evidence: >-
+    https://justt.ai/.well-known/oauth-protected-resource returns a valid RFC 9728
+    document naming https://justt.ai/wp-json/mcp/mcp-oauth-server, scope "mcp".
+- id: oauth2
+  conforms: partial
+  evidence: >-
+    The chargeback REST API uses a bearer API key, NOT OAuth — its only
+    securityScheme is {type: http, scheme: bearer, bearerFormat: JWT}. OAuth 2.1
+    with PKCE exists only on the MCP surface at justt.ai.
+- id: oidc
+  conforms: false
+  evidence: /.well-known/openid-configuration returns 404 on every Justt host.
+- id: rfc9457-problem-details
+  conforms: false
+  evidence: >-
+    Errors use a custom {status, message, errorId} envelope on application/json.
+    No application/problem+json media type appears anywhere in either spec.
+- id: standard-webhooks
+  conforms: true
+  evidence: >-
+    https://developers.justt.ai/docs/signature-verification documents the
+    webhook-id, webhook-timestamp and webhook-signature headers — the Standard
+    Webhooks (standardwebhooks.com) header triple — with HMAC-SHA256 signing, a
+    recommended 5-minute replay tolerance, and raw-body verification. The webhook
+    OpenAPI additionally declares a `svix-signature` apiKey security scheme,
+    consistent with a Svix-backed implementation of that specification.
+  note: >-
+    This is the clearest domain/cross-cutting standard Justt's contract declares
+    for its event surface: an integrator who already verifies Standard Webhooks
+    signatures needs no bespoke verifier.
+- id: rfc9331-ratelimit-headers
+  conforms: false
+  evidence: >-
+    No RateLimit-*, X-RateLimit-* or Retry-After header is documented or declared.
+    Only the bare 429 status is published.
+- id: rfc8594-sunset-header
+  conforms: false
+  evidence: No Sunset or Deprecation header contract is published.
+- id: iso-8601
+  conforms: true
+  evidence: >-
+    https://developers.justt.ai/docs/data-conventions mandates ISO 8601 UTC
+    (YYYY-MM-DDTHH:MM:SSZ) as an accepted date format on every endpoint taking a
+    date/time; date-time formats appear throughout the spec schemas.
+- id: iso-4217
+  conforms: true
+  evidence: >-
+    https://developers.justt.ai/docs/data-conventions states currency uses the
+    ISO 4217 three-letter code standard; ChargebackDto and the transaction order
+    item schemas carry currency codes in that form.
+- id: rfc4122-uuid
+  conforms: true
+  evidence: >-
+    Justt-issued identifiers are UUIDs (MerchantResponseDto.merchantUuid declares
+    format: uuid; chargeback and alert ids are UUID-shaped throughout the examples).
+- id: json-schema
+  conforms: true
+  evidence: >-
+    44 named component schemas in the REST spec and 13 in the webhook spec, with
+    enums, required lists, formats and examples.
+- id: scim
+  conforms: false
+- id: odata
+  conforms: false
+- id: fhir
+  conforms: false
+- id: psd2
+  conforms: false
+  evidence: >-
+    Justt handles card-dispute representment, not payment initiation or account
+    information. PSD2/Open Banking interfaces are out of scope for this surface.
+- id: pci-dss
+  conforms: unknown
+  evidence: >-
+    Justt claims SOC 2 Type II and the ISO 27001 family on justt.ai, but does NOT
+    claim PCI DSS anywhere in its public material. Recorded as unknown rather than
+    false; the trust center's document list is access-gated.
+
+domain_standards:
+  market: card disputes / chargeback representment
+  note: >-
+    The card-dispute market's standards are card-network programs and reason-code
+    schemes rather than IETF/OASIS specifications. Justt's contract carries them as
+    enumerations and documented program support, which is the strongest form
+    available in this domain.
+  entries:
+  - id: visa-ce-3.0
+    name: Visa Compelling Evidence 3.0
+    conforms: true
+    kind: card-network-program
+    evidence: >-
+      https://developers.justt.ai/docs/visa-ce-30-mastercard-fptp-evidence-guide —
+      a dedicated integration guide for matching past transaction data against the
+      programme's eligibility criteria to contest first-party fraud disputes.
+  - id: mastercard-fptp
+    name: Mastercard First Party Trust Program
+    conforms: true
+    kind: card-network-program
+    evidence: >-
+      Same guide as Visa CE 3.0; Justt documents automated eligibility matching for
+      both programmes.
+  - id: visa-vamp
+    name: Visa Acquirer Monitoring Program
+    conforms: true
+    kind: card-network-program
+    evidence: >-
+      VAMP monitoring and compliance tracking is a named product capability
+      (https://justt.ai/vamp/).
+  - id: visa-dispute-reason-codes
+    name: Visa dispute condition / network reason codes
+    conforms: true
+    kind: code-scheme
+    evidence: >-
+      network_reason_code appears in the PSP payload shapes Justt accepts; the
+      sandbox guide's worked example carries "network_reason_code": "10.4"
+      (Visa condition 10.4, "Other Fraud — Card Absent Environment").
+  - id: ethoca-verifi-alerts
+    name: Ethoca / Verifi CDRN / Verifi RDR pre-chargeback alerts
+    conforms: true
+    kind: network-alert-scheme
+    evidence: >-
+      ProviderName enum ["Verifi RDR", "Verifi CDRN", "Ethoca"] and the
+      OutcomeStatus enum, which carries the numeric alert outcome codes those
+      networks use (100, 101, 102, 130, 900, 901, 902, 940, 950-957, 951) alongside
+      their human-readable equivalents, in
+      openapi/justt-rest-api-openapi-original.json.
+    note: >-
+      This is the strongest domain-standard signal in the contract: Justt encodes
+      the alert networks' own outcome-code vocabulary directly in its schema, so a
+      merchant already reporting Ethoca/Verifi outcomes maps one-to-one with no
+      bespoke translation.
+
+compliance:
+  published: true
+  source: https://justt.ai/
+  trust_center: https://trust.justt.ai/
+  certifications:
+  - SOC 2 Type II
+  - ISO 27001
+  - ISO 27017
+  - ISO 27018
+  regimes:
+  - GDPR
+  - CCPA
+  evidence: >-
+    Verbatim from justt.ai: "SOC 2 Type II plus the full ISO 27001 family" and
+    "ISO 27001 / 27017 / 27018". GDPR/CCPA also appear as named regimes, and the
+    REST API carries a first-class DataSubjectsController_requestDataSubjectRemoval
+    operation implementing the erasure right — a compliance claim backed by a
+    callable endpoint rather than only by a marketing page.
+  cross_reference: security/justt-trust-center.yml

@@ -1,0 +1,66 @@
+generated: '2026-08-23'
+method: searched
+probe: true
+url: https://trust.justt.ai/
+platform: Vanta
+certifications:
+- SOC 2 Type II
+- ISO 27001
+- ISO 27017
+- ISO 27018
+regimes:
+- GDPR
+- CCPA
+data_handling:
+- per-customer data isolation
+evidence:
+- source: https://trust.justt.ai/
+  http_status: 200
+  kind: trust-center
+  keywords: [trust, security, compliance]
+  markers:
+  - 'title: Justt Trust Center'
+  - 'canonical: https://trust.justt.ai'
+  - 'data-signature-manifest-url: https://assets.vanta.com/static/signature-manifest...'
+  - 'meta description: "Use this Trust Center to learn about our security posture and
+    request access to our security documentation."'
+- source: https://justt.ai/
+  http_status: 200
+  kind: compliance-claim
+  quotes:
+  - SOC 2 Type II plus the full ISO 27001 family
+  - ISO 27001 / 27017 / 27018
+  - GDPR
+  - CCPA
+- source: openapi/justt-rest-api-openapi-original.json
+  kind: contract-backed-compliance
+  note: >-
+    POST /data-subjects/removal (DataSubjectsController_requestDataSubjectRemoval)
+    — "Request to remove personal data from the Justt system in compliance with
+    data protection regulations (GDPR, CCPA)." The erasure right is callable, not
+    just asserted.
+access:
+  documents_public: false
+  note: >-
+    The certification reports themselves are request-gated behind the Vanta trust
+    center ("request access to our security documentation"), which is the normal
+    posture. The certification NAMES are public on justt.ai and are what is
+    recorded here.
+readability_note: >-
+  trust.justt.ai is a client-rendered Vanta single-page app that answers 200 with
+  the same HTML shell for every path, so the automated keyword probe
+  (probe-security-programs.py) recorded no hit. This file was written from the
+  server-rendered head metadata plus the compliance claims on justt.ai's own
+  homepage, both fetched directly. The Vanta shell is why an automated scan of
+  this trust center returns nothing.
+vulnerability_disclosure:
+  published: false
+  note: >-
+    Justt publishes no vulnerability disclosure route reachable without a browser
+    session. /.well-known/security.txt returns 404 on justt.ai, www.justt.ai,
+    api.justt.ai, app.justt.ai and developers.justt.ai; /security,
+    /security-policy and /responsible-disclosure all return 404 on justt.ai; and
+    no HackerOne, Bugcrowd or Intigriti programme was found. No
+    VulnerabilityDisclosure, Security or SecurityTxt pointer is emitted. Publishing
+    an RFC 9116 security.txt naming the existing trust-center contact would be a
+    one-file fix.

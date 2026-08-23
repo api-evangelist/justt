@@ -1,0 +1,124 @@
+arazzo: 1.0.1
+info:
+  title: Drive a chargeback through its lifecycle in the Justt sandbox
+  version: 1.0.0
+  description: >-
+    Create a test chargeback from raw Stripe dispute data in the sandbox, advance
+    it to under_review, then resolve it as won — firing a webhook at each
+    transition so an integration can be validated end to end. Requires a sandbox
+    token, which is distinct from the production token.
+sourceDescriptions:
+- name: justtRest
+  url: ../openapi/justt-rest-api-openapi-original.json
+  type: openapi
+workflows:
+- workflowId: sandboxChargebackLifecycle
+  summary: Create, advance and resolve a sandbox chargeback
+  inputs:
+    type: object
+    required: [integrationId]
+    properties:
+      referenceAccountId:
+        type: string
+      integrationId:
+        type: string
+        description: Sandbox integration ID, provided by Justt
+      disputeId:
+        type: string
+        default: du_sandbox_test_001
+      chargeId:
+        type: string
+        default: ch_test_payment_001
+      amount:
+        type: integer
+        default: 12500
+      currency:
+        type: string
+        default: usd
+  steps:
+  - stepId: createTestChargeback
+    description: Upload a Stripe dispute in needs_response state
+    operationId: SandboxController_uploadRawData
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload:
+        dataSource: stripe
+        dataType: chargebacks
+        integrationId: $inputs.integrationId
+        requestTimeStamp: '2026-01-15T10:30:00Z'
+        rawData:
+          id: $inputs.disputeId
+          object: dispute
+          amount: $inputs.amount
+          charge: $inputs.chargeId
+          currency: $inputs.currency
+          reason: fraudulent
+          status: needs_response
+    successCriteria:
+    - condition: $statusCode == 201
+  - stepId: advanceToUnderReview
+    description: Re-post the same dispute id with status under_review
+    operationId: SandboxController_uploadRawData
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload:
+        dataSource: stripe
+        dataType: chargebacks
+        integrationId: $inputs.integrationId
+        requestTimeStamp: '2026-01-16T14:20:00Z'
+        rawData:
+          id: $inputs.disputeId
+          object: dispute
+          amount: $inputs.amount
+          charge: $inputs.chargeId
+          currency: $inputs.currency
+          reason: fraudulent
+          status: under_review
+    successCriteria:
+    - condition: $statusCode == 201
+  - stepId: resolveAsWon
+    description: Re-post the same dispute id with status won
+    operationId: SandboxController_uploadRawData
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload:
+        dataSource: stripe
+        dataType: chargebacks
+        integrationId: $inputs.integrationId
+        requestTimeStamp: '2026-01-20T09:45:00Z'
+        rawData:
+          id: $inputs.disputeId
+          object: dispute
+          amount: $inputs.amount
+          charge: $inputs.chargeId
+          currency: $inputs.currency
+          reason: fraudulent
+          status: won
+    successCriteria:
+    - condition: $statusCode == 201
+  - stepId: verifyInList
+    description: Confirm the sandbox chargeback is queryable through the standard endpoint
+    operationId: ChargebackController_findAll
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    - name: psp
+      in: query
+      value: stripe
+    successCriteria:
+    - condition: $statusCode == 200
+  outputs:
+    disputeId: $inputs.disputeId

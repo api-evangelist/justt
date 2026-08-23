@@ -1,0 +1,45 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the Justt Pre-Chargeback Alerts API
+  version: 1.0.0
+extends: openapi/justt-pre-chargeback-alerts-openapi-original.json
+x-generated: '2026-08-23'
+x-method: generated
+x-source: >-
+  API Evangelist annotations derived from the harvested spec and Justt's published
+  alerts documentation. The original spec is not mutated.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/justt
+    x-apievangelist-discovery: >-
+      This definition is not linked from Justt's getting-started page. It was found
+      via the RFC 9727 linkset at https://developers.justt.ai/.well-known/api-catalog.
+    x-apievangelist-conventions: conventions/justt-conventions.yml
+    x-apievangelist-related-write-operation: >-
+      PreChargebackAlertsController_createOutcome lives in the REST API spec, not
+      here — reading alerts and reporting their outcome are split across two
+      definitions.
+- target: $.servers
+  description: >-
+    The published servers array carries a development entry pointing at localhost,
+    which is not a callable host for any consumer.
+  update:
+    x-apievangelist-note: >-
+      servers[1] is http://localhost:3075/v1 ("Development server"). Clients must
+      select the production server https://api.justt.ai/v1 explicitly. Leaving a
+      localhost server in a published contract is a defect worth reporting.
+- target: $
+  update:
+    x-apievangelist-suggested-security:
+    - bearer: []
+- target: $.paths['/pre-chargeback-alerts/alerts'].get
+  update:
+    x-apievangelist-realtime-alternative: >-
+      Justt supports push notification of alerts in real time (contact the account
+      manager) and emits the pre_chargeback_alert.received webhook. Prefer either
+      over polling — alerts are time-critical.
+    x-apievangelist-pagination:
+      style: page-number
+      params: [page, limit]
+      continuation_field: hasMore

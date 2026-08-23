@@ -1,0 +1,111 @@
+generated: '2026-08-23'
+method: searched
+source: https://developers.justt.ai/.well-known/api-catalog
+note: >-
+  Justt serves a real RFC 9727 /.well-known/api-catalog on its developer portal host —
+  a linkset naming all three of its OpenAPI definitions. That document is what led this
+  pipeline to the Pre-Chargeback Alerts API and the OpenAPI 3.1 webhook-events spec,
+  neither of which is linked from the getting-started page. justt.ai (WordPress) also
+  serves RFC 8414 / RFC 9728 OAuth discovery documents advertising an MCP-scoped
+  authorization server. trust.justt.ai is a Vanta-hosted single-page app that answers
+  HTTP 200 with the same 4,255-byte HTML shell for EVERY /.well-known/* path including
+  a nonsense control path, so none of its 200s are documents and none are recorded.
+hit_count: 3
+hosts:
+- host: https://developers.justt.ai
+  documents:
+  - path: /.well-known/api-catalog
+    status: 200
+    file: justt-api-catalog.json
+    note: >-
+      RFC 9727 linkset. service-desc entries for rest-api.json,
+      alerts-api-with-tags.json and webhooks.swagger-spec.json.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://justt.ai
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    file: justt-oauth-authorization-server.json
+    note: >-
+      RFC 8414. issuer https://justt.ai, authorization_code + refresh_token,
+      PKCE S256, single scope "mcp", token_endpoint_auth_methods_supported [none].
+      Served by the WordPress marketing site, not by api.justt.ai.
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    file: justt-oauth-protected-resource.json
+    note: >-
+      RFC 9728. Declares the protected resource https://justt.ai/wp-json/mcp/mcp-oauth-server
+      with bearer_methods_supported [header] and scope "mcp".
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.justt.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://app.justt.ai
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://trust.justt.ai
+  soft_404_control:
+    path: /.well-known/definitely-not-real-9f2a
+    status: 200
+    bytes: 4255
+    content_type: text/html
+    verdict: catch-all
+  documents: []
+  note: >-
+    Vanta trust-center SPA. Every /.well-known/* path returns HTTP 200 with an
+    identical 4,255-byte HTML shell, including a control path that cannot exist.
+    Recorded as ZERO documents; no WellKnown or SecurityTxt credit is claimed here.
+security_txt:
+  served: false
+  note: >-
+    No /.well-known/security.txt on any Justt host, and /security,
+    /security-policy and /responsible-disclosure all 404 on justt.ai.
+    No SecurityTxt or Security pointer is emitted.

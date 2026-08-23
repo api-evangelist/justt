@@ -1,0 +1,114 @@
+arazzo: 1.0.1
+info:
+  title: Triage Justt chargebacks and set the representment decision
+  version: 1.0.0
+  description: >-
+    List open chargebacks, enrich one with additional merchant data, and override
+    whether Justt should represent it. Acceptance is deliberately NOT part of this
+    workflow — it is irreversible and requires a human.
+sourceDescriptions:
+- name: justtRest
+  url: ../openapi/justt-rest-api-openapi-original.json
+  type: openapi
+workflows:
+- workflowId: triageAndDecide
+  summary: Find chargebacks needing a response, enrich, then set should-fight
+  inputs:
+    type: object
+    required: [shouldFight]
+    properties:
+      referenceAccountId:
+        type: string
+      psp:
+        type: string
+        default: stripe
+      limit:
+        type: integer
+        default: 50
+      page:
+        type: integer
+        default: 1
+      enrichment:
+        type: object
+        description: >-
+          Data-point fields to write onto the chargeback. Field names come from the
+          account's own data-points list at https://app.justt.ai/datapoints-list —
+          they are account-specific and must not be guessed.
+      shouldFight:
+        type: boolean
+  steps:
+  - stepId: listChargebacks
+    description: Page through chargebacks awaiting a response
+    operationId: ChargebackController_findAll
+    parameters:
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    - name: psp
+      in: query
+      value: $inputs.psp
+    - name: pspStatus
+      in: query
+      value: needs_response
+    - name: limit
+      in: query
+      value: $inputs.limit
+    - name: page
+      in: query
+      value: $inputs.page
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      firstChargebackId: $response.body#/data/0/id
+      hasMore: $response.body#/hasMore
+  - stepId: readChargeback
+    description: Read the case, including Justt's own Fight/Accept recommendation
+    operationId: ChargebackItemController_getChargeback
+    parameters:
+    - name: id
+      in: path
+      value: $steps.listChargebacks.outputs.firstChargebackId
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      recommendation: $response.body#/data/disputeOptimizationResult
+  - stepId: enrichChargeback
+    description: Write additional merchant data points onto the chargeback
+    operationId: ChargebackItemController_updateChargeback
+    parameters:
+    - name: id
+      in: path
+      value: $steps.listChargebacks.outputs.firstChargebackId
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload: $inputs.enrichment
+    successCriteria:
+    - condition: $statusCode == 201
+  - stepId: setShouldFight
+    description: >-
+      Override the contractual default for this chargeback. Reversible by
+      re-issuing with the opposite boolean, but Justt publishes no window for how
+      long that remains possible.
+    operationId: ChargebackItemController_markShouldFight
+    parameters:
+    - name: id
+      in: path
+      value: $steps.listChargebacks.outputs.firstChargebackId
+    - name: reference-account-id
+      in: header
+      value: $inputs.referenceAccountId
+    requestBody:
+      contentType: application/json
+      payload:
+        shouldFight: $inputs.shouldFight
+    successCriteria:
+    - condition: $statusCode == 201
+  outputs:
+    chargebackId: $steps.listChargebacks.outputs.firstChargebackId
+    recommendation: $steps.readChargeback.outputs.recommendation

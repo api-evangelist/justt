@@ -1,0 +1,54 @@
+generated: '2026-08-23'
+method: searched
+source: >-
+  registry.npmjs.org, pypi.org, rubygems.org, crates.io, api.nuget.org,
+  search.maven.org, proxy.golang.org, packagist.org, api.github.com,
+  https://developers.justt.ai/llms.txt
+package_count: 0
+official_sdk_count: 0
+packages: []
+note: >-
+  Justt publishes NO first-party client libraries. This is a searched zero, not an
+  unchecked one — the finding is that a 23-operation payments API with an
+  irreversible write path ships no SDK in any language, so every integrator hand-
+  rolls an HTTP client.
+searched:
+- registry: npm
+  queries: [justt, justt-ai, '@justt/sdk', justt-api]
+  result: no first-party package; all matches are unrelated (homebridge-tuya, just-t, ai-sdk)
+- registry: pypi
+  queries: [justt, justt-api, justt-sdk]
+  result: 404 on all three
+- registry: rubygems
+  result: none found
+- registry: crates.io
+  result: none found
+- registry: nuget
+  result: none found
+- registry: maven-central
+  result: none found
+- registry: pkg.go.dev
+  result: none found
+- registry: packagist
+  result: none found
+docs_evidence:
+  source: https://developers.justt.ai/llms.txt
+  note: >-
+    Justt's own 100-entry documentation index contains no SDK, client-library,
+    or install page. The authentication page teaches integration with a raw curl
+    example, and the file-upload guides describe multipart requests directly.
+    There is no "Libraries", "SDKs" or "Quickstart in your language" section.
+github:
+  org: null
+  note: >-
+    No Justt GitHub organization exists. github.com/justt-ai returns 404. The
+    account at github.com/justtai is an unrelated personal user (repositories:
+    3dmodel, mushtest, PartCrafter fork, teston, what-it) with no Justt code and
+    no connection to justt.ai. No GitHubOrganization pointer is emitted.
+cli:
+  published: false
+  note: No first-party CLI is documented or distributed.
+pointer_note: >-
+  NO Packages or SDKs pointer is emitted in apis.yml. This file records a verified
+  absence; emitting a pointer would assert a distribution surface Justt does not
+  have.

@@ -1,0 +1,95 @@
+generated: '2026-08-23'
+method: searched
+source: >-
+  https://developers.justt.ai/docs/authentication,
+  openapi/justt-rest-api-openapi-original.json,
+  openapi/justt-pre-chargeback-alerts-openapi-original.json,
+  asyncapi/justt-webhook-events-openapi-original.json,
+  https://justt.ai/.well-known/oauth-authorization-server
+docs: https://developers.justt.ai/docs/authentication
+summary:
+  types:
+  - http
+  - apiKey
+  api_key_in:
+  - header
+  oauth2_flows: []
+  primary: bearer API key in the Authorization header
+schemes:
+- name: bearer
+  type: http
+  scheme: bearer
+  bearerFormat: JWT
+  in: header
+  parameter: Authorization
+  format: 'Authorization: Bearer <api-key>'
+  applies_to: Justt REST API, Pre-Chargeback Alerts API
+  issuance: https://app.justt.ai/connect-psp/integration/api-integration
+  environment_specific: true
+  docs: https://developers.justt.ai/docs/authentication
+  sources:
+  - openapi/justt-rest-api-openapi-original.json
+  - openapi/justt-pre-chargeback-alerts-openapi-original.json
+  note: >-
+    The spec declares bearerFormat: JWT, but the documentation consistently calls
+    the credential an "API key" obtained from the hub rather than a token minted by
+    a login flow. Treat it as a long-lived static bearer credential. Justt states
+    the keys "come with a significant level of privilege" and warns against
+    committing them.
+- name: svix-signature
+  type: apiKey
+  in: header
+  parameter: svix-signature
+  applies_to: inbound webhooks (Justt -> merchant)
+  direction: inbound
+  algorithm: HMAC-SHA256
+  sources:
+  - asyncapi/justt-webhook-events-openapi-original.json
+  note: >-
+    This scheme secures the reverse direction: it authenticates Justt to the
+    merchant's endpoint, not the merchant to Justt. The documented header triple is
+    webhook-id / webhook-timestamp / webhook-signature (Standard Webhooks); the
+    spec names the Svix header. Verify against the raw request body with a
+    5-minute timestamp tolerance.
+  docs: https://developers.justt.ai/docs/signature-verification
+- name: mcp-oauth
+  type: oauth2
+  applies_to: the MCP endpoint at justt.ai/wp-json/mcp/mcp-oauth-server
+  authorization_server: https://justt.ai
+  authorization_endpoint: https://justt.ai/oauth/authorize
+  token_endpoint: https://justt.ai/oauth/token
+  revocation_endpoint: https://justt.ai/oauth/revoke
+  grant_types: [authorization_code, refresh_token]
+  pkce: S256
+  scopes: [mcp]
+  token_endpoint_auth_methods: [none]
+  sources:
+  - well-known/justt-oauth-authorization-server.json
+  - well-known/justt-oauth-protected-resource.json
+  note: >-
+    Discovered by probe, not documented. This OAuth surface belongs to the MCP
+    endpoint on the WordPress marketing host and has NOTHING to do with the
+    chargeback API, which never uses OAuth. Recorded so an agent does not attempt
+    an OAuth dance against api.justt.ai.
+authorization_model:
+  scopes: false
+  roles: false
+  tenancy:
+    mechanism: reference-account-id request header
+    docs: https://developers.justt.ai/docs/reference-accounts
+    note: >-
+      One key can address multiple merchant accounts by setting the
+      reference-account-id header. There is no scope, permission or role system —
+      a key that can read chargebacks can also accept them, which is the
+      irreversible operation. Least-privilege is not expressible.
+transport:
+  https_required: true
+  statement: >-
+    "All our API calls must be transmitted over HTTPS. Calls made over plain HTTP
+    will not succeed."
+gaps:
+- The OpenAPI declares securitySchemes but leaves the top-level `security` array
+  empty and applies no security requirement to any operation, so a generated client
+  will not send credentials by default even though every call requires them.
+- No scopes, no per-key permissions, no key rotation or expiry policy is published.
+- No OpenID Connect discovery on any Justt host.

@@ -1,0 +1,92 @@
+generated: '2026-08-23'
+method: derived
+source: >-
+  mcp/justt-mcp.yml, openapi/justt-rest-api-openapi-original.json,
+  openapi/justt-pre-chargeback-alerts-openapi-original.json
+surfaces:
+  openapi:
+  - file: openapi/justt-rest-api-openapi-original.json
+    title: Rest api
+    operations: 21
+    gated: false
+  - file: openapi/justt-pre-chargeback-alerts-openapi-original.json
+    title: Pre-Chargeback Alerts API
+    operations: 2
+    gated: false
+  webhooks:
+    file: asyncapi/justt-webhook-events-openapi-original.json
+    events: 11
+    gated: false
+  graphql:
+    endpoint: null
+    note: >-
+      Justt formerly shipped a GraphQL API — the docs still carry a
+      "GraphQL to REST API Migration Guide" — but no /graphql surface answers on
+      api.justt.ai today (HTTP 404 at /graphql and /v1/graphql). Treated as retired.
+  mcp:
+    url: https://justt.ai/wp-json/mcp/mcp-oauth-server
+    gated: true
+    gate: OAuth 2.1 (HTTP 401 mcp_unauthorized on tools/list)
+coverage:
+  tools_named: 0
+  tools_bound: 0
+  mcp_only: 0
+  rest_operations_total: 23
+  rest_operations_with_tool: 0
+  note: >-
+    This crosswalk records a REAL DIVERGENCE rather than a mapping. Justt serves a
+    reachable MCP endpoint on justt.ai, but tools/list is OAuth-gated so no tool
+    names exist to bind, and the endpoint is served by the WordPress marketing site
+    rather than by api.justt.ai. Every one of the 23 published REST operations is
+    therefore rest_only: an agent that speaks MCP cannot reach the chargeback API,
+    and must call the REST contract directly with a bearer API key.
+crosswalk: []
+mcp_only: []
+rest_only:
+- capability: Chargebacks
+  operations:
+  - ChargebackController_findAll
+  - ChargebackItemController_getChargeback
+  - ChargebackItemController_updateChargeback
+  - ChargebackItemController_markShouldFight
+  - ChargebackItemController_acceptChargeback
+  - ChargebackItemController_getAcceptChargebackStatus
+  reason: no MCP tool published for this capability
+- capability: Evidence
+  operations:
+  - EvidenceController_submitEvidence
+  - EvidenceController_getEvidenceSubmissionStatus
+  - FilesController_create
+  reason: no MCP tool published for this capability
+- capability: Transactions
+  operations:
+  - TransactionController_createTransaction
+  reason: no MCP tool published for this capability
+- capability: Merchants
+  operations:
+  - MerchantsController_getMerchants
+  - MerchantsController_getMerchant
+  - MerchantsController_createMerchant
+  - MerchantsController_deactivateMerchant
+  reason: no MCP tool published for this capability
+- capability: Integrations
+  operations:
+  - IntegrationsController_getIntegrations
+  - IntegrationsController_getIntegration
+  - IntegrationsController_createIntegration
+  - IntegrationsController_deactivateIntegration
+  reason: no MCP tool published for this capability
+- capability: Pre-chargeback Alerts
+  operations:
+  - AlertController_findAll
+  - AlertController_findOne
+  - PreChargebackAlertsController_createOutcome
+  reason: no MCP tool published for this capability
+- capability: Data Subjects
+  operations:
+  - DataSubjectsController_requestDataSubjectRemoval
+  reason: no MCP tool published for this capability
+- capability: Sandbox
+  operations:
+  - SandboxController_uploadRawData
+  reason: no MCP tool published for this capability

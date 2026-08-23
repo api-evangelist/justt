@@ -1,0 +1,125 @@
+generated: '2026-08-23'
+method: probed
+source: https://justt.ai/.well-known/oauth-protected-resource
+status: published
+deployment:
+  mode: remote
+  endpoint: https://justt.ai/wp-json/mcp/mcp-oauth-server
+  auth: oauth
+  verified: probed
+server:
+  name: justt-wordpress-mcp
+  transport: http
+  url: https://justt.ai/wp-json/mcp/mcp-oauth-server
+x-evidence:
+  fetched: '2026-08-23'
+  discovery_document: https://justt.ai/.well-known/oauth-protected-resource
+  discovery_status: 200
+  endpoint_probe:
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"tools/list"}'
+    http_status: 401
+    body_returned: '{"code":"mcp_unauthorized","message":"MCP authentication required.","data":{"status":401}}'
+  negative_control:
+    url: https://justt.ai/wp-json/mcp/mcp
+    http_status: 404
+    body_returned: '{"code":"rest_no_route",...}'
+    note: >-
+      The control proves the route is real rather than a WordPress catch-all:
+      a sibling path under the same namespace returns rest_no_route, while the
+      advertised endpoint returns the MCP-specific mcp_unauthorized challenge.
+authorization:
+  authorization_server: https://justt.ai
+  metadata: https://justt.ai/.well-known/oauth-authorization-server
+  grant_types: [authorization_code, refresh_token]
+  pkce: S256
+  scopes: [mcp]
+  dynamic_client_registration: client_id_metadata_document_supported
+tools: []
+tools_note: >-
+  tools/list is OAuth-gated (HTTP 401), so the live tool set and its inputSchemas
+  could not be enumerated anonymously. No tool list is asserted here.
+scope_caveat: >-
+  IMPORTANT — this MCP endpoint is served by justt.ai, the WordPress marketing
+  site, not by api.justt.ai. It is a genuine, reachable, provider-hosted MCP
+  surface on a domain Justt controls, but nothing in Justt's public documentation
+  connects it to the chargeback REST API, and the enumerable tool set is unknown.
+  Do not read this artifact as evidence that the Justt REST API is exposed over
+  MCP. The candidate_tools block below is what an MCP server over the documented
+  REST API WOULD expose; it is DERIVED and is not published by Justt.
+candidate_tools:
+  status: candidate
+  method: derived
+  source: openapi/justt-rest-api-openapi-original.json
+  note: >-
+    One candidate tool per public REST operationId. Not published by Justt.
+  tools:
+  - name: upsert_transaction
+    description: Create or update a transaction record attached to an existing chargeback case
+    source_operation: openapi/justt-rest-api-openapi-original.json#TransactionController_createTransaction
+  - name: list_chargebacks
+    description: Get chargebacks by search criteria
+    source_operation: openapi/justt-rest-api-openapi-original.json#ChargebackController_findAll
+  - name: get_chargeback
+    description: Retrieve a single chargeback by id
+    source_operation: openapi/justt-rest-api-openapi-original.json#ChargebackItemController_getChargeback
+  - name: update_chargeback
+    description: Enrich a chargeback with additional merchant data points
+    source_operation: openapi/justt-rest-api-openapi-original.json#ChargebackItemController_updateChargeback
+  - name: mark_should_fight
+    description: Override whether Justt represents a given chargeback
+    source_operation: openapi/justt-rest-api-openapi-original.json#ChargebackItemController_markShouldFight
+  - name: accept_chargeback
+    description: Accept a chargeback and forgo representment (irreversible)
+    source_operation: openapi/justt-rest-api-openapi-original.json#ChargebackItemController_acceptChargeback
+  - name: get_accept_chargeback_status
+    description: Poll the asynchronous status of an accept-chargeback request
+    source_operation: openapi/justt-rest-api-openapi-original.json#ChargebackItemController_getAcceptChargebackStatus
+  - name: submit_evidence
+    description: Submit an uploaded evidence file against a chargeback
+    source_operation: openapi/justt-rest-api-openapi-original.json#EvidenceController_submitEvidence
+  - name: get_evidence_submission_status
+    description: Poll the asynchronous status of an evidence submission
+    source_operation: openapi/justt-rest-api-openapi-original.json#EvidenceController_getEvidenceSubmissionStatus
+  - name: upload_file
+    description: Upload an evidence file or image
+    source_operation: openapi/justt-rest-api-openapi-original.json#FilesController_create
+  - name: request_data_subject_removal
+    description: Request GDPR/CCPA removal of a data subject's personal data
+    source_operation: openapi/justt-rest-api-openapi-original.json#DataSubjectsController_requestDataSubjectRemoval
+  - name: list_merchants
+    description: Retrieve merchants with filtering and pagination
+    source_operation: openapi/justt-rest-api-openapi-original.json#MerchantsController_getMerchants
+  - name: get_merchant
+    description: Retrieve a single merchant by UUID
+    source_operation: openapi/justt-rest-api-openapi-original.json#MerchantsController_getMerchant
+  - name: create_merchant
+    description: Create a merchant with business profile information
+    source_operation: openapi/justt-rest-api-openapi-original.json#MerchantsController_createMerchant
+  - name: deactivate_merchant
+    description: Deactivate a merchant (soft — the merchant is not removed)
+    source_operation: openapi/justt-rest-api-openapi-original.json#MerchantsController_deactivateMerchant
+  - name: list_integrations
+    description: Retrieve PSP integrations with filtering and pagination
+    source_operation: openapi/justt-rest-api-openapi-original.json#IntegrationsController_getIntegrations
+  - name: get_integration
+    description: Retrieve a single PSP integration by id
+    source_operation: openapi/justt-rest-api-openapi-original.json#IntegrationsController_getIntegration
+  - name: create_integration
+    description: Create a PSP integration
+    source_operation: openapi/justt-rest-api-openapi-original.json#IntegrationsController_createIntegration
+  - name: deactivate_integration
+    description: Deactivate a PSP integration (soft — the integration is not removed)
+    source_operation: openapi/justt-rest-api-openapi-original.json#IntegrationsController_deactivateIntegration
+  - name: create_alert_outcome
+    description: Record the outcome of a pre-chargeback alert
+    source_operation: openapi/justt-rest-api-openapi-original.json#PreChargebackAlertsController_createOutcome
+  - name: upload_sandbox_raw_data
+    description: Upload raw PSP data into the sandbox environment
+    source_operation: openapi/justt-rest-api-openapi-original.json#SandboxController_uploadRawData
+  - name: list_alerts
+    description: Get pre-chargeback alerts by search criteria
+    source_operation: openapi/justt-pre-chargeback-alerts-openapi-original.json#AlertController_findAll
+  - name: get_alert
+    description: Retrieve a single pre-chargeback alert by id
+    source_operation: openapi/justt-pre-chargeback-alerts-openapi-original.json#AlertController_findOne
