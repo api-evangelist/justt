@@ -8,11 +8,8 @@ info:
     the read operations and the write operation live in two different Justt
     specifications.
 sourceDescriptions:
-- name: justtAlerts
-  url: ../openapi/justt-pre-chargeback-alerts-openapi-original.json
-  type: openapi
-- name: justtRest
-  url: ../openapi/justt-rest-api-openapi-original.json
+- name: preChargebackAlertsApi
+  url: ../openapi/justt-pre-chargeback-alerts-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: alertToOutcome
@@ -45,7 +42,7 @@ workflows:
   steps:
   - stepId: listAlerts
     description: Retrieve pre-chargeback alerts matching the given criteria
-    operationId: $sourceDescriptions.justtAlerts.AlertController_findAll
+    operationId: $sourceDescriptions.preChargebackAlertsApi.AlertController_findAll
     parameters:
     - name: limit
       in: query
@@ -57,7 +54,7 @@ workflows:
       hasMore: $response.body#/hasMore
   - stepId: readAlert
     description: Retrieve a single alert by its internal id
-    operationId: $sourceDescriptions.justtAlerts.AlertController_findOne
+    operationId: $sourceDescriptions.preChargebackAlertsApi.AlertController_findOne
     parameters:
     - name: internalAlertId
       in: path
@@ -68,7 +65,7 @@ workflows:
     description: >-
       Record what was done about the alert. Lives in the REST API specification,
       not in the Alerts specification.
-    operationId: $sourceDescriptions.justtRest.PreChargebackAlertsController_createOutcome
+    operationId: $sourceDescriptions.preChargebackAlertsApi.PreChargebackAlertsController_createOutcome
     parameters:
     - name: reference-account-id
       in: header

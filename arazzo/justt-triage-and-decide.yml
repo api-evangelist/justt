@@ -7,8 +7,8 @@ info:
     whether Justt should represent it. Acceptance is deliberately NOT part of this
     workflow — it is irreversible and requires a human.
 sourceDescriptions:
-- name: justtRest
-  url: ../openapi/justt-rest-api-openapi-original.json
+- name: chargebacksApi
+  url: ../openapi/justt-chargebacks-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: triageAndDecide

@@ -8,8 +8,11 @@ info:
     transition so an integration can be validated end to end. Requires a sandbox
     token, which is distinct from the production token.
 sourceDescriptions:
-- name: justtRest
-  url: ../openapi/justt-rest-api-openapi-original.json
+- name: chargebacksApi
+  url: ../openapi/justt-chargebacks-api-openapi.yml
+  type: openapi
+- name: sandboxApi
+  url: ../openapi/justt-sandbox-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: sandboxChargebackLifecycle

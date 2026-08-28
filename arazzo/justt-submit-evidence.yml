@@ -6,8 +6,14 @@ info:
     Read an open chargeback, upload an evidence file, submit it to the PSP, and
     poll the asynchronous submission to a terminal state.
 sourceDescriptions:
-- name: justtRest
-  url: ../openapi/justt-rest-api-openapi-original.json
+- name: chargebacksApi
+  url: ../openapi/justt-chargebacks-api-openapi.yml
+  type: openapi
+- name: evidenceApi
+  url: ../openapi/justt-evidence-api-openapi.yml
+  type: openapi
+- name: filesApi
+  url: ../openapi/justt-files-api-openapi.yml
   type: openapi
 workflows:
 - workflowId: submitEvidenceForChargeback
