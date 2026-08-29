@@ -225,6 +225,9 @@ maintainers:
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: CapabilityMap
+  url: capabilities/justt-capability-edges.yml
+  name: Justt Business Capability Map
 - type: AgenticAccess
   url: agentic-access/justt-agentic-access.yml
 - type: DomainSecurity
