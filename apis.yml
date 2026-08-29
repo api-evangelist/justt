@@ -10,6 +10,17 @@ description: Justt is an AI-native chargeback management and dispute-representme
   an RFC 9727 /.well-known/api-catalog, an llms.txt documentation index, a sandbox environment, and a
   Vanta-hosted trust center.
 url: https://raw.githubusercontent.com/api-evangelist/justt/refs/heads/main/apis.yml
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: false
+  label: Hosted service · you call their endpoint
+  confidence: medium
+  source:
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://justt.ai/wp-content/uploads/2025/03/blog-7-1.jpg
 x-type: company
 x-source: harvest:secondary-market
