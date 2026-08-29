@@ -5,6 +5,17 @@ info:
   description: >-
     Read an open chargeback, upload an evidence file, submit it to the PSP, and
     poll the asynchronous submission to a terminal state.
+  x-realizes-capability-ids:
+  - BC-1340.70
+  x-capability-derivation:
+    method: 'deterministic join: sourceDescriptions -> per-tag OpenAPI -> tag/capability edge. No classification at this step.'
+    min_confidence: 0.7
+    sources:
+    - capability_id: BC-1340.70
+      capability_name: Card Transaction Processing Management
+      spec: justt-evidence-api-openapi.yml
+      confidence: 0.78
+    model: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities, CC BY 4.0
 sourceDescriptions:
 - name: chargebacksApi
   url: ../openapi/justt-chargebacks-api-openapi.yml
