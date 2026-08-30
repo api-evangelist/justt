@@ -1,0 +1,269 @@
+openapi: 3.2.0
+info:
+  title: Rest Evidence API
+  description: 'Justt official REST api, you can find our docs here: https://justt.readme.io/'
+  version: 1.0.0
+  contact: {}
+servers:
+- url: https://api.justt.ai/v1
+tags:
+- name: Evidence
+paths:
+  /chargebacks/{id}/evidence/submit:
+    post:
+      description: Submits a request to attach evidence to a chargeback. The evidence will be processed asynchronously; the request will return immediately with a submission ID, and the evidence will be submitted in the background, the process will take up to 24 hours to complete, depending on the payment processor.
+      operationId: EvidenceController_submitEvidence
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier (UUID) set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmitEvidenceDto'
+      responses:
+        '201':
+          description: Returns success if the evidence submitted request accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponseDTO'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Request to submit evidence for a chargeback
+      tags:
+      - Evidence
+  /chargebacks/{id}/evidence/submit/{submitEvidenceId}:
+    get:
+      description: Returns the current status of an evidence submission for a chargeback. Evidence submission is an asynchronous process, so this endpoint allows you to check the real-time state of the submission (e.g., in progress, completed, failed).
+      operationId: EvidenceController_getEvidenceSubmissionStatus
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: submitEvidenceId
+        required: true
+        in: path
+        description: The submit evidence ID
+        schema:
+          example: 63e3830ed8cbb72dce2164b1
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier (UUID) set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      responses:
+        '200':
+          description: Returns Submit evidence status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EvidenceSubmissionStatusDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Get the status of a evidence submission
+      tags:
+      - Evidence
+components:
+  schemas:
+    SubmitEvidenceDto:
+      type: object
+      properties:
+        fileId:
+          type: string
+          example: file_1234567890
+      required:
+      - fileId
+    CreateResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 207
+          - 208
+          - 210
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 423
+          - 424
+          - 428
+          - 429
+          - 456
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          - 507
+          - 508
+          example: 201
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        id:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The id of the created/updated resource
+      required:
+      - status
+      - message
+      - id
+    EvidenceSubmissionStatusDto:
+      type: object
+      properties:
+        submitEvidenceId:
+          type: string
+          example: sub_1234567890
+        fileId:
+          type: string
+          example: file_1234567890
+        id:
+          type: string
+          example: cbk_9f1e2d3c4b5a
+          description: The chargeback identifier
+        referenceAccountId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+        status:
+          example: inProgress
+          allOf:
+          - $ref: '#/components/schemas/EvidenceSubmissionLifecycle'
+        submittedAt:
+          type: string
+          format: date-time
+          example: '2025-01-15T12:34:56.789Z'
+        error:
+          type: string
+          example: Network timeout
+      required:
+      - submitEvidenceId
+      - fileId
+      - id
+      - referenceAccountId
+      - status
+      - submittedAt
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    EvidenceSubmissionLifecycle:
+      type: string
+      enum:
+      - created
+      - inProgress
+      - failed
+      - succeeded
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

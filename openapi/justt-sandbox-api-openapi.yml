@@ -1,0 +1,276 @@
+openapi: 3.2.0
+info:
+  title: Rest Sandbox API
+  description: 'Justt official REST api, you can find our docs here: https://justt.readme.io/'
+  version: 1.0.0
+  contact: {}
+servers:
+- url: https://api.justt.ai/v1
+tags:
+- name: Sandbox
+paths:
+  /sandbox/raw-data:
+    post:
+      description: This endpoint allows you to upload raw transaction/chargeback data in the sandbox environment for testing purposes. The data will be processed asynchronously and stored in the system.
+      operationId: SandboxController_uploadRawData
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        description: Raw data payload containing transaction information from the PSP
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RawDataRequestDto'
+      responses:
+        '201':
+          description: The raw data has been successfully processed and stored in the sandbox environment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponseDTO'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Upload raw data in sandbox environment
+      tags:
+      - Sandbox
+components:
+  schemas:
+    CreateResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 207
+          - 208
+          - 210
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 423
+          - 424
+          - 428
+          - 429
+          - 456
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          - 507
+          - 508
+          example: 201
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        id:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The id of the created/updated resource
+      required:
+      - status
+      - message
+      - id
+    PSP:
+      type: string
+      enum:
+      - tabapay
+      - nmi
+      - stripe
+      - paypal
+      - amex
+      - braintree
+      - shopify_payments
+      - amazon_pay
+      - adyen
+      - other
+      - cardpointe
+      - checkout
+      - omnipay
+      - acquiring
+      - chase
+      - nuvei
+      - authorizenet
+      - mollie
+      - firstdata
+      - fiserv
+      - elavon
+      - bluesnap
+      - vantiv
+      - dlocal
+      - payu
+      - payu-latam
+      - worldpay_mai
+      - worldpay_iq
+      - payroc
+      - citi
+      - merlink_drs
+      - credorax
+      - dalenys
+      - worldpay_cb911
+      - worldpay_accertify
+      - discover
+      - elavon_payment_insider
+      - elavon_connect
+      - shift4
+      - payplug
+      - global_payments
+      - square
+      - ebanx
+      - zen
+      - payments_hub
+      - ems_data
+      - maverick
+      - corvia
+      - payroc_canada
+      - tap
+      - sabadell
+      - kushki
+      - worldpay
+      - klarna
+      - paysafe
+      - airwallex
+      - mangopay
+      - ecommpay
+      - iyzico
+      - lighthouse
+      - moka
+      - worldpay_wdp
+      - finix
+      - justt_sandbox
+      - paynearme
+      - get_net
+      - bbva
+      - coinflow
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    RawDataRequestDto:
+      type: object
+      properties:
+        dataSource:
+          description: Data source for example the PSP (Payment Service Provider) name
+          example: stripe
+          allOf:
+          - $ref: '#/components/schemas/PSP'
+        dataType:
+          description: Type of data to process
+          example: chargebacks
+          allOf:
+          - $ref: '#/components/schemas/DataType'
+        integrationId:
+          type: string
+          description: The id will be provide by Justt
+          example: 6624da56a16c7bad2a2b682a
+          title: Unique identifier for the integration
+        requestTimeStamp:
+          type: string
+          description: Timestamp of the request in ISO 8601 format
+        rawData:
+          type: object
+          description: Raw data in key-value format
+        dataSourceVersion:
+          type: string
+          description: Version of the API used to fetch the data
+          example: v1
+      required:
+      - dataSource
+      - dataType
+      - integrationId
+      - requestTimeStamp
+      - rawData
+      - dataSourceVersion
+    DataType:
+      type: string
+      enum:
+      - chargebacks
+      - transactions
+      - refunds
+      - early_fraud_warnings
+      - card_checks
+      - payment_actions
+      - issuer_notes
+      description: Type of data to process
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

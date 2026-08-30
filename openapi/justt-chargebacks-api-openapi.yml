@@ -1,0 +1,893 @@
+openapi: 3.2.0
+info:
+  title: Rest Chargebacks API
+  description: 'Justt official REST api, you can find our docs here: https://justt.readme.io/'
+  version: 1.0.0
+  contact: {}
+servers:
+- url: https://api.justt.ai/v1
+tags:
+- name: Chargebacks
+paths:
+  /chargebacks:
+    get:
+      description: Retrieving a array of chargebacks matching the given criteria
+      operationId: ChargebackController_findAll
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        description: The number of items to return between 10 to 100
+        schema:
+          default: 10
+          example: '10'
+          type: number
+      - name: page
+        required: false
+        in: query
+        description: The offset of the first item to return
+        schema:
+          default: 1
+          example: '1'
+          type: number
+      - name: startDate
+        required: false
+        in: query
+        description: Start date (of the posting date) for date range filtering (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          example: '2023-01-01T00:00:00Z'
+          type: string
+      - name: endDate
+        required: false
+        in: query
+        description: End date (of the posting date) for date range filtering (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          example: '2023-01-31T23:59:59Z'
+          type: string
+      - name: chargebackId
+        required: false
+        in: query
+        description: A unique chargeback Identifier set by the PSP
+        schema:
+          example: QRZ54SXB4K6TF232
+          type: string
+      - name: psp
+        required: false
+        in: query
+        description: The name of the PSP in which the transaction was processed
+        schema:
+          $ref: '#/components/schemas/PSP'
+      - name: pspStatus
+        required: false
+        in: query
+        description: The status of the chargeback in the PSP system
+        schema:
+          $ref: '#/components/schemas/PSPStatus'
+      - name: status
+        required: false
+        in: query
+        description: The status of the chargeback in Justt system
+        schema:
+          $ref: '#/components/schemas/InternalStatus'
+      - name: minEnrichmentScore
+        required: false
+        in: query
+        description: Minimum enrichment score to filter by (0-1)
+        schema:
+          example: 0.75
+          type: number
+      - name: maxEnrichmentScore
+        required: false
+        in: query
+        description: Maximum enrichment score to filter by (0-1)
+        schema:
+          example: 0.95
+          type: number
+      - name: pspStatusChangeStartDate
+        required: false
+        in: query
+        description: Start date for PSP status change date filtering (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          example: '2023-01-01T00:00:00Z'
+          type: string
+      - name: pspStatusChangeEndDate
+        required: false
+        in: query
+        description: End date for PSP status change date filtering (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          example: '2023-01-31T23:59:59Z'
+          type: string
+      responses:
+        '200':
+          description: Returns the chargebacks data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChargebacksResponseDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Get chargebacks by search criteria
+      tags:
+      - Chargebacks
+  /chargebacks/{id}:
+    get:
+      description: Retrieving a single chargeback by id
+      operationId: ChargebackItemController_getChargeback
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      responses:
+        '200':
+          description: Returns the chargeback data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetChargebackResponseDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Get chargeback
+      tags:
+      - Chargebacks
+    patch:
+      description: To see your full request body parameters names please check you data boost page at the hub https://app.justt.ai/datapoints-list
+      operationId: ChargebackItemController_updateChargeback
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier (UUID) set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      requestBody:
+        required: true
+        description: dynamic body param according to your solution at https://app.justt.ai/datapoints-list
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Object'
+      responses:
+        '201':
+          description: Returns success if the chargeback data was updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponseDTO'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Update chargeback
+      tags:
+      - Chargebacks
+  /chargebacks/{id}/should-fight:
+    patch:
+      description: By default, Justt will represent or not represent chargebacks as agreed in your contract. Use this endpoint to override this for a specific chargeback
+      operationId: ChargebackItemController_markShouldFight
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier (UUID) set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShouldFightDto'
+      responses:
+        '201':
+          description: Returns success if the chargeback was marked to fight/not fight successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponseDTO'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Should Justt fight for a given chargeback
+      tags:
+      - Chargebacks
+  /chargebacks/{id}/accept:
+    post:
+      description: Accepts a chargeback, indicating you will not dispute it. This action acknowledges the validity of the customer's claim and allows the funds to be returned to them. The chargeback must have an open status and your payment processor must support acceptance. Once accepted, the chargeback cannot be reversed.
+      operationId: ChargebackItemController_acceptChargeback
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier (UUID) set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      responses:
+        '200':
+          description: Chargeback accepted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponseDTO'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Accept chargeback
+      tags:
+      - Chargebacks
+    get:
+      description: Returns the current status of an accept chargeback for a chargeback. Accept chargeback is an asynchronous process, so this endpoint allows you to check the real-time state of the accept (e.g., in progress, completed, failed).
+      operationId: ChargebackItemController_getAcceptChargebackStatus
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: id
+        required: true
+        in: path
+        description: A unique chargeback Identifier (UUID) set by Justt
+        schema:
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          type: string
+      responses:
+        '200':
+          description: Returns Accept chargeback status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AcceptChargebackStatusDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Get the status of an accept chargeback
+      tags:
+      - Chargebacks
+components:
+  schemas:
+    PSP:
+      type: string
+      enum:
+      - tabapay
+      - nmi
+      - stripe
+      - paypal
+      - amex
+      - braintree
+      - shopify_payments
+      - amazon_pay
+      - adyen
+      - other
+      - cardpointe
+      - checkout
+      - omnipay
+      - acquiring
+      - chase
+      - nuvei
+      - authorizenet
+      - mollie
+      - firstdata
+      - fiserv
+      - elavon
+      - bluesnap
+      - vantiv
+      - dlocal
+      - payu
+      - payu-latam
+      - worldpay_mai
+      - worldpay_iq
+      - payroc
+      - citi
+      - merlink_drs
+      - credorax
+      - dalenys
+      - worldpay_cb911
+      - worldpay_accertify
+      - discover
+      - elavon_payment_insider
+      - elavon_connect
+      - shift4
+      - payplug
+      - global_payments
+      - square
+      - ebanx
+      - zen
+      - payments_hub
+      - ems_data
+      - maverick
+      - corvia
+      - payroc_canada
+      - tap
+      - sabadell
+      - kushki
+      - worldpay
+      - klarna
+      - paysafe
+      - airwallex
+      - mangopay
+      - ecommpay
+      - iyzico
+      - lighthouse
+      - moka
+      - worldpay_wdp
+      - finix
+      - justt_sandbox
+      - paynearme
+      - get_net
+      - bbva
+      - coinflow
+    ShouldFightDto:
+      type: object
+      properties:
+        shouldFight:
+          type: boolean
+          description: Should Justt fight for the given chargeback
+      required:
+      - shouldFight
+    CreateResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 207
+          - 208
+          - 210
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 423
+          - 424
+          - 428
+          - 429
+          - 456
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          - 507
+          - 508
+          example: 201
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        id:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The id of the created/updated resource
+      required:
+      - status
+      - message
+      - id
+    InternalStatus:
+      type: string
+      enum:
+      - waiting_for_data
+      - building_evidence
+      - pending_psp_results
+      - not_represented
+    AcceptChargebackStatusDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: cbk_9f1e2d3c4b5a
+          description: The chargeback identifier
+        referenceAccountId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The merchant account identifier reference
+        status:
+          example: inProgress
+          allOf:
+          - $ref: '#/components/schemas/EvidenceSubmissionLifecycle'
+        acceptedAt:
+          type: string
+          format: date-time
+          example: '2025-01-15T12:34:56.789Z'
+        error:
+          type: string
+          example: Network timeout
+      required:
+      - id
+      - referenceAccountId
+      - status
+      - acceptedAt
+    GetChargebackResponseDto:
+      type: object
+      properties:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        data:
+          description: The requested chargeback data
+          allOf:
+          - $ref: '#/components/schemas/ChargebackDto'
+      required:
+      - status
+      - message
+      - data
+    LifecycleStage:
+      type: string
+      enum:
+      - alert
+      - inquiry
+      - claim
+      - chargeback
+      - second_chargeback
+      - third_chargeback
+      - other
+      description: The stage of the chargebacks lifecycle
+    PSPStatus:
+      type: string
+      enum:
+      - needs_response
+      - under_review
+      - won
+      - lost
+      - not_applicable
+      - evidence_not_submitted_by_psp
+      - split
+      - unknown
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    GetChargebacksResponseDto:
+      type: object
+      properties:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        hasMore:
+          type: boolean
+          example: 'true'
+          description: An indicator if there are more items to return
+        data:
+          description: The requested chargebacks data
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargebackDto'
+      required:
+      - status
+      - message
+      - hasMore
+      - data
+    Object:
+      type: object
+    DisputeOptimizationResult:
+      type: string
+      enum:
+      - Fight
+      - Accept
+      description: The ROI based recommendation of Justt for this chargeback, Reach out to the Justt team To learn more
+    EvidenceSubmissionLifecycle:
+      type: string
+      enum:
+      - created
+      - inProgress
+      - failed
+      - succeeded
+    HttpStatus:
+      type: number
+      enum:
+      - 100
+      - 101
+      - 102
+      - 103
+      - 200
+      - 201
+      - 202
+      - 203
+      - 204
+      - 205
+      - 206
+      - 207
+      - 208
+      - 210
+      - 300
+      - 301
+      - 302
+      - 303
+      - 304
+      - 307
+      - 308
+      - 400
+      - 401
+      - 402
+      - 403
+      - 404
+      - 405
+      - 406
+      - 407
+      - 408
+      - 409
+      - 410
+      - 411
+      - 412
+      - 413
+      - 414
+      - 415
+      - 416
+      - 417
+      - 418
+      - 421
+      - 422
+      - 423
+      - 424
+      - 428
+      - 429
+      - 456
+      - 500
+      - 501
+      - 502
+      - 503
+      - 504
+      - 505
+      - 507
+      - 508
+      description: The status of the response
+    ChargebackDto:
+      type: object
+      properties:
+        id:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique chargeback Identifier set by Justt
+        chargebackId:
+          type: string
+          example: QRZ54SXB4K6TF232
+          description: A unique chargeback Identifier set by the PSP
+        referenceAccountId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The merchant account identifier reference
+        integrationId:
+          type: string
+          example: stripe_integration_123
+          description: The integration ID which is the source of the chargeback
+        psp:
+          example: stripe
+          description: The name of the PSP in which the transaction was processed
+          allOf:
+          - $ref: '#/components/schemas/PSP'
+        currency:
+          type: string
+          example: USD
+          description: The currency of the amount
+        amount:
+          type: number
+          example: 100.17
+          description: The amount that is being charged back by the issuing bank
+        postingDate:
+          format: date-time
+          type: string
+          description: The date the chargeback was posted
+          example: '2022-03-15T09:39:24.514Z'
+        transactionCreatedDate:
+          format: date-time
+          type: string
+          description: The date the transaction was processed
+          example: '2022-03-15T09:39:24.514Z'
+        dueDate:
+          format: date-time
+          type: string
+          example: '2022-03-15T09:39:24.514Z'
+          description: The date the chargeback is due
+        pspStatusChangeDate:
+          format: date-time
+          type: string
+          example: '2022-03-15T09:39:24.514Z'
+          description: The date when the chargeback PSP status was last changed
+        pspStatus:
+          example: under_review
+          description: The status of the chargeback in the PSP system
+          allOf:
+          - $ref: '#/components/schemas/PSPStatus'
+        status:
+          example: building_evidence
+          description: The status of the chargeback in Justt system
+          allOf:
+          - $ref: '#/components/schemas/InternalStatus'
+        lifecycleStage:
+          example: chargeback
+          description: The stage of the chargebacks lifecycle
+          allOf:
+          - $ref: '#/components/schemas/LifecycleStage'
+        transactionId:
+          type: string
+          example: 65SD89F08236587G4
+          description: The transaction ID set by the PSP
+        arn:
+          type: string
+          example: 65SD89F08236587G4
+          description: The ARN set by the PSP
+        externalTransactionIdentifier:
+          type: string
+          example: 65SD89F08236587G41111
+          description: The Transaction Identifier
+        merchantReferenceName:
+          type: string
+          example: 65SD89F08236587G41111
+          description: The Merchant identifier in the PSP
+        reasonCode:
+          type: string
+          example: '10.4'
+          description: The reason code of chargeback, set by the card scheme
+        reason:
+          type: string
+          example: fraud
+          description: The reason of chargeback
+        cardScheme:
+          type: string
+          example: AMEX
+          description: The card scheme of the cardholder
+        enrichmentRatio:
+          type: number
+          example: 0.85
+          description: The enrichment ratio of the chargeback metadata
+        winProbability:
+          type: number
+          example: 80
+          description: The win probability percent of Justt for this chargeback, Reach out to the Justt team To learn more
+        roiRecommendation:
+          example: Fight
+          description: The ROI based recommendation of Justt for this chargeback, Reach out to the Justt team To learn more
+          allOf:
+          - $ref: '#/components/schemas/DisputeOptimizationResult'
+        bin:
+          type: string
+          example: '411111'
+          description: The Bank Identification Number (BIN) of the card
+        billingCountry:
+          type: string
+          example: US
+          description: The billing country of the cardholder
+        isEnriched:
+          type: boolean
+          example: true
+          description: Indicates whether the chargeback data has been enriched
+        paymentMethod:
+          type: string
+          example: credit_card
+          description: The payment method used for the transaction
+        cardLastFourDigits:
+          type: string
+          example: '1234'
+          description: The last four digits of the card used for the transaction
+        wasRepresented:
+          type: boolean
+          example: true
+          description: Indicates whether the chargeback was represented
+        transactionAmount:
+          type:
+          - number
+          - 'null'
+          example: 250
+          description: The original transaction amount at the time of purchase
+        transactionCurrency:
+          type:
+          - string
+          - 'null'
+          example: USD
+          description: The currency of the original transaction
+      required:
+      - id
+      - chargebackId
+      - referenceAccountId
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

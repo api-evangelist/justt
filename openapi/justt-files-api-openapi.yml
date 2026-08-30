@@ -1,0 +1,191 @@
+openapi: 3.2.0
+info:
+  title: Rest Files API
+  description: 'Justt official REST api, you can find our docs here: https://justt.readme.io/'
+  version: 1.0.0
+  contact: {}
+servers:
+- url: https://api.justt.ai/v1
+tags:
+- name: Files
+paths:
+  /files:
+    post:
+      description: Upload a file to the Justt system. Use multipart/form-data with the file in a field named 'file'. Supported file types include documents, images, and other evidence files. For more details, visit https://developers.justt.ai/docs/file-upload-guide
+      operationId: FilesController_create
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateFileDto'
+      responses:
+        '201':
+          description: File uploaded successfully - returns the new file ID and checksum
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFileResponseDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Upload a file
+      tags:
+      - Files
+components:
+  schemas:
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    CreateFileResponseDto:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 207
+          - 208
+          - 210
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 423
+          - 424
+          - 428
+          - 429
+          - 456
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          - 507
+          - 508
+          example: 201
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        id:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The id of the created/updated resource
+        metadata:
+          type: string
+          description: Metadata as it has been provided
+        checksum:
+          type: string
+          description: An md5 hash checksum of the provided file content
+      required:
+      - status
+      - message
+      - id
+      - checksum
+    PURPOSE:
+      type: string
+      enum:
+      - evidence_file
+      - evidence_image
+      description: The purpose of the uploaded file, to see the full list please visit https://developers.justt.ai/docs/file-upload-guide#purpose
+    CreateFileDto:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The file to upload. The multipart/form-data field name must be exactly 'file'. Using a different field name (e.g. 'image', 'attachment') will result in a 400 error.
+        metadata:
+          type: object
+          additionalProperties: true
+          example: '{"key" : "value"}'
+          description: A key value pair for meta data on the file
+        purpose:
+          example: evidence_image
+          description: The purpose of the uploaded file, to see the full list please visit https://developers.justt.ai/docs/file-upload-guide#purpose
+          allOf:
+          - $ref: '#/components/schemas/PURPOSE'
+      required:
+      - file
+      - purpose
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http

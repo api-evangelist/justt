@@ -1,0 +1,678 @@
+openapi: 3.2.0
+info:
+  title: Justt Pre-chargeback Alerts API
+  version: 1.0.0
+  description: 'Operations tagged Pre-chargeback Alerts across 2 of this provider''s published API definitions: justt-pre-chargeback-alerts-openapi-original.json, justt-rest-api-openapi-original.json. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.justt.ai/v1
+  description: Production server
+- url: http://localhost:3075/v1
+  description: Development server
+tags:
+- name: Pre-chargeback Alerts
+paths:
+  /pre-chargeback-alerts/alerts:
+    get:
+      tags:
+      - Pre-chargeback Alerts
+      operationId: AlertController_findAll
+      summary: Get alerts by search criteria
+      description: Retrieving an array of pre-chargeback alerts matching the given criteria. In addition to this endpoint, we also support push notifications that share alerts with you in real-time. Contact your account manager to set up for immediate alert notifications.
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: limit
+        required: false
+        in: query
+        example: '10'
+        description: The number of items to return between 10 to 100
+        schema:
+          default: 10
+          type: number
+      - name: page
+        required: false
+        in: query
+        example: '1'
+        description: The offset of the first item to return
+        schema:
+          default: 0
+          type: number
+      - name: alertStartDate
+        required: false
+        in: query
+        example: '2023-01-01T00:00:00Z'
+        description: Alert creation start date. for date range filtering (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          type: string
+      - name: alertEndDate
+        required: false
+        in: query
+        example: '2023-01-31T23:59:59Z'
+        description: Alert creation end date. for date range filtering (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          type: string
+      - name: startDate
+        required: false
+        in: query
+        example: '2023-01-01T00:00:00Z'
+        description: Start date for filtering alerts by creation date in Justt systems (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          type: string
+      - name: endDate
+        required: false
+        in: query
+        example: '2023-01-31T23:59:59Z'
+        description: End date for filtering alerts by creation date in Justt systems (ISO 8601 in UTC)
+        schema:
+          format: date-time
+          type: string
+      - name: providerAlertId
+        required: false
+        in: query
+        example: 123e4567-e89b-12d3-a456-426614174000
+        description: A unique alert Identifier set by the provider
+        schema:
+          type: string
+      - name: alertType
+        required: false
+        in: query
+        example: customerdispute_alert
+        description: The type of the alert
+        schema:
+          enum:
+          - customerdispute_alert
+          - issuer_alert
+          type: string
+      - name: provider
+        required: false
+        in: query
+        example: ethoca
+        description: The name of the provider that generated the alert
+        schema:
+          enum:
+          - ethoca
+          - verifi
+          type: string
+      - name: transactionId
+        required: false
+        in: query
+        example: TX8901234567
+        description: The transaction ID associated with the alert
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the alerts data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAlertsResponseDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+    servers:
+    - url: https://api.justt.ai/v1
+      description: Production server
+    - url: http://localhost:3075/v1
+      description: Development server
+  /pre-chargeback-alerts/alerts/{internalAlertId}:
+    get:
+      tags:
+      - Pre-chargeback Alerts
+      operationId: AlertController_findOne
+      summary: Get alert
+      description: Retrieving a single pre-chargeback alert by id
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      - name: internalAlertId
+        required: true
+        in: path
+        example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+        description: A unique alert Identifier set by Justt
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Returns the alert data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAlertResponseDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+    servers:
+    - url: https://api.justt.ai/v1
+      description: Production server
+    - url: http://localhost:3075/v1
+      description: Development server
+  /pre-chargeback-alerts/alerts/outcome:
+    post:
+      description: Create and record the outcome of a pre-chargeback alert (e.g., refunded, resolved, accepted). Pre-chargeback alerts are early warnings that allow merchants to take action before a chargeback is filed.
+      operationId: PreChargebackAlertsController_createOutcome
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        description: Alert outcome data including alert ID, provider name, and outcome details
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOutcomeDto'
+      responses:
+        '201':
+          description: Returns success if the alert outcome was created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateOutcomeResponseDto'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO_2'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO_2'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO_2'
+      security:
+      - bearer: []
+      summary: Create alert outcome
+      tags:
+      - Pre-chargeback Alerts
+    servers:
+    - url: https://api.justt.ai/v1
+components:
+  schemas:
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 424
+          - 428
+          - 429
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          example: 400
+          description: The status of the response
+        message:
+          type: string
+          example: Invalid parameters
+          description: The message of the response
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    GetAlertsResponseDto:
+      type: object
+      properties:
+        status:
+          type: number
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 424
+          - 428
+          - 429
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          example: 200
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        hasMore:
+          type: boolean
+          example: true
+          description: An indicator if there are more items to return
+        data:
+          description: The requested alerts data
+          type: array
+          items:
+            $ref: '#/components/schemas/AlertDto'
+      required:
+      - status
+      - message
+      - hasMore
+      - data
+    AlertDto:
+      type: object
+      properties:
+        internalAlertId:
+          type: string
+          format: uuid
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique alert Identifier set by Justt
+        merchantUuid:
+          type: string
+          format: uuid
+          example: 123e4567-e89b-12d3-a456-426614174111
+          description: Your unique merchant identifier in Justt's system
+        merchantName:
+          type: string
+          example: Example Merchant
+          description: The name of your merchant account
+        arn:
+          type: string
+          example: Example ARN
+          description: The Acquirer Reference Number
+        authorizationCode:
+          type: string
+          example: Example Authorization Code
+          description: The Authorization code for this alert
+        merchantOrderID:
+          type: string
+          example: Example Merchant Order Id
+          description: The Merchant Order Id for this alert
+        provider:
+          type: string
+          enum:
+          - ethoca
+          - verifi
+          example: ethoca
+          description: The name of the provider that generated the alert
+        providerAlertId:
+          type: string
+          example: 123e4567-e89b-12d3-a456-426614174000
+          description: A unique alert Identifier set by the provider
+        alertTimestamp:
+          type: string
+          format: date-time
+          example: '2023-09-15T14:22:31Z'
+          description: The timestamp when the alert was generated
+        transaction:
+          type: object
+          properties:
+            id:
+              type: string
+              example: TX8901234567
+              description: Unique identifier for the transaction
+            timestamp:
+              type: string
+              format: date-time
+              example: '2023-09-10T09:15:00Z'
+              description: The timestamp when the transaction occurred
+            amount:
+              type: number
+              example: 149.99
+              description: The transaction amount
+            currency:
+              type: string
+              example: USD
+              description: The transaction currency code (ISO 4217)
+            card:
+              type: object
+              properties:
+                last4:
+                  type: string
+                  example: '1234'
+                  description: Last 4 digits of the card number
+                bin:
+                  type: string
+                  example: '411111'
+                  description: Bank Identification Number (first 6 digits of the card)
+        alertType:
+          type: string
+          enum:
+          - customerdispute_alert
+          - issuer_alert
+          example: customerdispute_alert
+          description: The type of the alert
+        metadata:
+          type: object
+          description: Additional information related to the alert
+          additionalProperties: true
+          example:
+            reason: Cardholder does not recognize the transaction
+            issuerName: Example Bank
+            responseDeadline: '2023-09-17T23:59:59Z'
+      required:
+      - internalAlertId
+      - merchantUuid
+      - provider
+      - providerAlertId
+      - alertTimestamp
+      - transaction
+      - alertType
+    GetAlertResponseDto:
+      type: object
+      properties:
+        status:
+          type: number
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 424
+          - 428
+          - 429
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          example: 200
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        data:
+          description: The requested alert data
+          allOf:
+          - $ref: '#/components/schemas/AlertDto'
+      required:
+      - status
+      - message
+      - data
+    CreateOutcomeResponseDto:
+      type: object
+      properties:
+        status:
+          type: number
+          description: The status of the response
+          example: 201
+        message:
+          type: string
+          description: The message of the response
+          example: success
+        id:
+          type: string
+          description: The id of the created outcome
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+      required:
+      - status
+      - message
+      - id
+    OutcomeStatus:
+      type: string
+      enum:
+      - resolved
+      - previously_refunded
+      - unresolved_dispute
+      - other
+      - stopped
+      - partially_stopped
+      - previously_cancelled
+      - missed
+      - notfound
+      - account_suspended
+      - in_progress
+      - shipper_contacted
+      - '100'
+      - '101'
+      - '102'
+      - '951'
+      - '130'
+      - '900'
+      - '901'
+      - '902'
+      - '940'
+      - '950'
+      - '952'
+      - '953'
+      - '954'
+      - '955'
+      - '956'
+      - '957'
+      description: The outcome for the alert
+    ProviderName:
+      type: string
+      enum:
+      - Verifi RDR
+      - Verifi CDRN
+      - Ethoca
+      description: The provider name of the alert
+    ErrorResponseDTO_2:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    RefundedStatus:
+      type: string
+      enum:
+      - refunded
+      - not refunded
+      - not settled
+      description: Whether the transaction was refunded, not refunded, or not settled
+    CreateOutcomeDto:
+      type: object
+      properties:
+        providerName:
+          description: The provider name of the alert
+          example: Ethoca
+          allOf:
+          - $ref: '#/components/schemas/ProviderName'
+        alertId:
+          type: string
+          description: A unique alert Identifier (UUID) set by Justt
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+        refunded:
+          description: Whether the transaction was refunded, not refunded, or not settled
+          example: not refunded
+          allOf:
+          - $ref: '#/components/schemas/RefundedStatus'
+        outcome:
+          description: The outcome for the alert
+          example: resolved
+          allOf:
+          - $ref: '#/components/schemas/OutcomeStatus'
+        comments:
+          type: string
+          description: Additional comments to be provided with the outcome
+          maxLength: 500
+          example: Customer was contacted and issue was resolved
+      required:
+      - providerName
+      - alertId
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
+x-refined-from:
+- justt-pre-chargeback-alerts-openapi-original.json
+- justt-rest-api-openapi-original.json
+x-readme:
+  explorer-enabled: true
+  proxy-enabled: true

@@ -1,0 +1,349 @@
+openapi: 3.2.0
+info:
+  title: Rest Transactions API
+  description: 'Justt official REST api, you can find our docs here: https://justt.readme.io/'
+  version: 1.0.0
+  contact: {}
+servers:
+- url: https://api.justt.ai/v1
+tags:
+- name: Transactions
+paths:
+  /transactions:
+    post:
+      description: Creates or updates a transaction record for additional purchases or activities made by a customer who has an existing chargeback case. This helps provide additional context for dispute resolution.
+      operationId: TransactionController_createTransaction
+      parameters:
+      - name: reference-account-id
+        in: header
+        description: If your account encompasses multiple merchants, you should use this header to specify the account you are working on (https://developers.justt.ai/docs/reference-accounts)
+        required: false
+        schema:
+          type: string
+      requestBody:
+        required: true
+        description: Transaction data to be created or updated in the system
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostTransactionDto'
+      responses:
+        '201':
+          description: Returns success if the transaction data was stored successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateResponseDTO'
+        '400':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '404':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+        '500':
+          description: In the message you can find explanation of what went wrong, please provide the error ID for our support for future investigation if needed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponseDTO'
+      security:
+      - bearer: []
+      summary: Upsert transaction
+      tags:
+      - Transactions
+components:
+  schemas:
+    PostTransactionDto:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          example: QRZ54SXB4K6TF232
+          description: A unique transaction Identifier set by the PSP
+        psp:
+          type: string
+          enum:
+          - tabapay
+          - nmi
+          - stripe
+          - paypal
+          - amex
+          - braintree
+          - shopify_payments
+          - amazon_pay
+          - adyen
+          - other
+          - cardpointe
+          - checkout
+          - omnipay
+          - acquiring
+          - chase
+          - nuvei
+          - authorizenet
+          - mollie
+          - firstdata
+          - fiserv
+          - elavon
+          - bluesnap
+          - vantiv
+          - dlocal
+          - payu
+          - payu-latam
+          - worldpay_mai
+          - worldpay_iq
+          - payroc
+          - citi
+          - merlink_drs
+          - credorax
+          - dalenys
+          - worldpay_cb911
+          - worldpay_accertify
+          - discover
+          - elavon_payment_insider
+          - elavon_connect
+          - shift4
+          - payplug
+          - global_payments
+          - square
+          - ebanx
+          - zen
+          - payments_hub
+          - ems_data
+          - maverick
+          - corvia
+          - payroc_canada
+          - tap
+          - sabadell
+          - kushki
+          - worldpay
+          - klarna
+          - paysafe
+          - airwallex
+          - mangopay
+          - ecommpay
+          - iyzico
+          - lighthouse
+          - moka
+          - worldpay_wdp
+          - finix
+          - justt_sandbox
+          - paynearme
+          - get_net
+          - bbva
+          - coinflow
+          example: stripe
+          description: The PSP that processed this transaction. Defaults to "other" when not provided
+        transactionCardLastFourDigits:
+          type: string
+          example: '5450'
+          description: The last 4 digits of the card used for this transaction
+        transactionCardAppleLast4Digits:
+          type: string
+          example: '3847'
+          description: The last four digit of the card when using apple pay
+        transactionCardScheme:
+          type: string
+          example: Mastercard
+          description: The name of the card scheme
+        transactionCardBin:
+          type: string
+          example: '458059'
+          description: Bank Identification Number - a 6 or 8 digits identifier unique to each issuing bank
+        transactionCustomerDisplayedTransactionDescription:
+          type: string
+          example: Sugarcube New York
+          description: The name of the merchant as displayed to the buyer on their bank/credit card statement
+        transactionCardFingerprint:
+          type: string
+          example: Xt5EWLLDS7FJjR1c
+          description: Unique identifier for a particular card number
+        transactionCreatedDate:
+          type: string
+          example: '2022-03-15T09:39:24.514Z'
+          description: The timestamp the transaction was processed
+        transactionStatus:
+          type: string
+          example: COMPLETE
+          description: The status of the transaction
+        transactionEarlyFraudWarningFraudType:
+          type: string
+          example: card_never_received
+          description: A description of the fraud that is reported by the issuer
+        transactionVerificationCustomerPicture:
+          type: string
+          example: Image.com/imagy image284972395
+          description: A link to a picture of the customer
+        transactionArn:
+          type: string
+          example: '856378586'
+          description: A unique number assigned to a credit card transaction by the merchant's bank as it moves through the PSP and the card scheme to the cardholder bank
+        transactionOrderIpAddress:
+          type: string
+          example: 173.66.27.204
+          description: The IP address of the customer at the time of purchase (checkout)
+        transactionOrderDeviceId:
+          type: string
+          example: m7Cmrf++0cW4P6XfF7m/rA
+          description: A unique identifier assigned to a device. Usually a string of alphanumeric characters
+        transactionOrderUserAgent:
+          type: string
+          example: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.63 Safari/537.36
+          description: The browser or application identifier string that indicates what device and software were used by the cardholder for checkout
+        transactionOrderEmail:
+          type: string
+          example: john@justt.ai
+          description: The customer's email address
+        transactionShippingToAddressLine1:
+          type: string
+          example: 1111 S Figueroa St
+          description: First line of the shipping address
+        transactionShippingToAddressLine2:
+          type: string
+          example: Suite 22
+          description: Second line of the shipping address
+        transactionShippingToState:
+          type: string
+          example: CA
+          description: The two–letter state abbreviation of the shipping address
+        transactionShippingToZipCode:
+          type: string
+          example: '90015'
+          description: The Zip code of the shipping address
+        transactionBillingAddressCountry:
+          type: string
+          example: United States
+          description: The country of the billing address
+        transactionShippingToFullShippingAddress:
+          type: string
+          example: Menahem Begin 154, 17 Flour, Acrocharge, Tel-Aviv, 51272, MD, United States
+          description: 'Any of following combined into one string: Address line 1, Address line 2, Shipping - City, Shipping - Zip, Shipping - State, Shipping - Country Name'
+        transactionOrderSteamId:
+          type: string
+          example: '8376938475934759'
+          description: A unique account identifier for the cardholder's account in the merchants system
+        transactionOrderPhone:
+          type: string
+          example: '19495551234'
+          description: The customer's phone number
+        transactionShippingPhone:
+          type: string
+          example: (201) 456-1626
+          description: The phone number of the person the item was sent to according to the shipping detail the customer entered during the checkout
+        transactionShippingEmail:
+          type: string
+          example: contact@justt.ai
+          description: The email address of the person the item was sent to according to the shipping details the customer entered during the checkout
+        transactionOrderItemsProductName:
+          type: string
+          example: Concealer Palette
+          description: The name of the product or service that was purchased
+        transactionOrderItemsProductDescription:
+          type: string
+          example: 'A professional concealer palette. shade #light'
+          description: A description of the product or service that was purchased
+      required:
+      - transactionId
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    CreateResponseDTO:
+      type: object
+      properties:
+        status:
+          type: string
+          enum:
+          - 100
+          - 101
+          - 102
+          - 103
+          - 200
+          - 201
+          - 202
+          - 203
+          - 204
+          - 205
+          - 206
+          - 207
+          - 208
+          - 210
+          - 300
+          - 301
+          - 302
+          - 303
+          - 304
+          - 307
+          - 308
+          - 400
+          - 401
+          - 402
+          - 403
+          - 404
+          - 405
+          - 406
+          - 407
+          - 408
+          - 409
+          - 410
+          - 411
+          - 412
+          - 413
+          - 414
+          - 415
+          - 416
+          - 417
+          - 418
+          - 421
+          - 422
+          - 423
+          - 424
+          - 428
+          - 429
+          - 456
+          - 500
+          - 501
+          - 502
+          - 503
+          - 504
+          - 505
+          - 507
+          - 508
+          example: 201
+          description: The status of the response
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        id:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: The id of the created/updated resource
+      required:
+      - status
+      - message
+      - id
+  securitySchemes:
+    bearer:
+      scheme: bearer
+      bearerFormat: JWT
+      type: http
