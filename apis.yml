@@ -34,6 +34,17 @@ tags:
 - Disputes
 - Fraud
 - Risk
+- Financial-Services
+- E-Commerce
+- Artificial Intelligence
+- Webhook
+tags_raw:
+- Company
+- Payments
+- Chargebacks
+- Disputes
+- Fraud
+- Risk
 - Financial Services
 - E-Commerce
 - Artificial Intelligence
@@ -105,6 +116,8 @@ apis:
   humanURL: https://developers.justt.ai/reference
   baseURL: https://api.justt.ai/v1
   tags:
+  - File
+  tags_raw:
   - Files
   properties:
   - type: OpenAPI
@@ -125,6 +138,8 @@ apis:
   humanURL: https://developers.justt.ai/reference
   baseURL: https://api.justt.ai/v1
   tags:
+  - Integration
+  tags_raw:
   - Integrations
   properties:
   - type: OpenAPI
@@ -205,6 +220,8 @@ apis:
   humanURL: https://developers.justt.ai/reference
   baseURL: https://api.justt.ai/v1
   tags:
+  - Transaction
+  tags_raw:
   - Transactions
   properties:
   - type: OpenAPI
