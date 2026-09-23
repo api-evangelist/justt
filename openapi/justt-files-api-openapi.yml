@@ -76,6 +76,32 @@ components:
       required:
       - status
       - message
+    PURPOSE:
+      type: string
+      enum:
+      - evidence_file
+      - evidence_image
+      description: The purpose of the uploaded file, to see the full list please visit https://developers.justt.ai/docs/file-upload-guide#purpose
+    CreateFileDto:
+      type: object
+      properties:
+        file:
+          type: string
+          format: binary
+          description: The file to upload. The multipart/form-data field name must be exactly 'file'. Using a different field name (e.g. 'image', 'attachment') will result in a 400 error.
+        metadata:
+          type: object
+          additionalProperties: true
+          example: '{"key" : "value"}'
+          description: A key value pair for meta data on the file
+        purpose:
+          example: evidence_image
+          description: The purpose of the uploaded file, to see the full list please visit https://developers.justt.ai/docs/file-upload-guide#purpose
+          allOf:
+          - $ref: '#/components/schemas/PURPOSE'
+      required:
+      - file
+      - purpose
     CreateFileResponseDto:
       type: object
       properties:
@@ -158,32 +184,6 @@ components:
       - message
       - id
       - checksum
-    PURPOSE:
-      type: string
-      enum:
-      - evidence_file
-      - evidence_image
-      description: The purpose of the uploaded file, to see the full list please visit https://developers.justt.ai/docs/file-upload-guide#purpose
-    CreateFileDto:
-      type: object
-      properties:
-        file:
-          type: string
-          format: binary
-          description: The file to upload. The multipart/form-data field name must be exactly 'file'. Using a different field name (e.g. 'image', 'attachment') will result in a 400 error.
-        metadata:
-          type: object
-          additionalProperties: true
-          example: '{"key" : "value"}'
-          description: A key value pair for meta data on the file
-        purpose:
-          example: evidence_image
-          description: The purpose of the uploaded file, to see the full list please visit https://developers.justt.ai/docs/file-upload-guide#purpose
-          allOf:
-          - $ref: '#/components/schemas/PURPOSE'
-      required:
-      - file
-      - purpose
   securitySchemes:
     bearer:
       scheme: bearer

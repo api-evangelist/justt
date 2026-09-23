@@ -184,6 +184,101 @@ paths:
       - Merchants
 components:
   schemas:
+    MerchantResponseDto:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          description: The name of the merchant
+          example: Acme Corporation
+        referenceId:
+          type: string
+          description: External reference ID for the merchant
+          example: MERCHANT_001
+        status:
+          description: Current status of the merchant
+          example: Active
+          allOf:
+          - $ref: '#/components/schemas/MerchantOverallStatus'
+        merchantUuid:
+          type: string
+          description: UUID of the merchant
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+      required:
+      - merchantName
+      - referenceId
+      - status
+      - merchantUuid
+    CreateMerchantResponseDto:
+      type: object
+      properties:
+        merchantUuid:
+          type: string
+          description: UUID of the created merchant
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+      required:
+      - merchantUuid
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    GetMerchantsResponseDto:
+      type: object
+      properties:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        hasMore:
+          type: boolean
+          example: 'true'
+          description: An indicator if there are more items to return
+        data:
+          description: The requested merchants data
+          type: array
+          items:
+            $ref: '#/components/schemas/MerchantResponseDto'
+      required:
+      - status
+      - message
+      - hasMore
+      - data
+    MerchantOverallStatus:
+      type: string
+      enum:
+      - SetupIncomplete
+      - Active
+      - ScheduledForActivation
+      - Inactive
+      - IntegrationError
+      - ReadyAwaitingGoLiveDate
+      - ReadyScheduledGoLiveDate
+      - AllIntegrationDown
+      - AllIntegrationValidate
+      - PartiallyActiveByError
+      - PartiallyActiveByValidation
+      description: Current status of the merchant
     CreateMerchantDto:
       type: object
       properties:
@@ -225,123 +320,12 @@ components:
       - email
       - firstName
       - lastName
-    CreateMerchantResponseDto:
-      type: object
-      properties:
-        merchantUuid:
-          type: string
-          description: UUID of the created merchant
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-      required:
-      - merchantUuid
-    MerchantOverallStatus:
-      type: string
-      enum:
-      - SetupIncomplete
-      - Active
-      - ScheduledForActivation
-      - Inactive
-      - IntegrationError
-      - ReadyAwaitingGoLiveDate
-      - ReadyScheduledGoLiveDate
-      - AllIntegrationDown
-      - AllIntegrationValidate
-      - PartiallyActiveByError
-      - PartiallyActiveByValidation
-      description: Current status of the merchant
-    DeactivateMerchantDto:
-      type: object
-      properties:
-        deactivationType:
-          description: Type of deactivation
-          example: postingDate
-          allOf:
-          - $ref: '#/components/schemas/DeactivationType'
-        deactivationDate:
-          format: date-time
-          type: string
-          description: Date when the deactivation should take effect
-          example: '2024-01-01T00:00:00.000Z'
-      required:
-      - deactivationType
-      - deactivationDate
-    MerchantResponseDto:
-      type: object
-      properties:
-        merchantName:
-          type: string
-          description: The name of the merchant
-          example: Acme Corporation
-        referenceId:
-          type: string
-          description: External reference ID for the merchant
-          example: MERCHANT_001
-        status:
-          description: Current status of the merchant
-          example: Active
-          allOf:
-          - $ref: '#/components/schemas/MerchantOverallStatus'
-        merchantUuid:
-          type: string
-          description: UUID of the merchant
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-      required:
-      - merchantName
-      - referenceId
-      - status
-      - merchantUuid
-    ErrorResponseDTO:
-      type: object
-      properties:
-        status:
-          type: number
-          example: 500
-          description: Error status of the response
-        message:
-          type: string
-          example: Internal Server Error
-          description: Description of the error that occurred
-        errorId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-          description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
     DeactivationType:
       type: string
       enum:
       - postingDate
       - dueDate
       description: Type of deactivation
-    GetMerchantsResponseDto:
-      type: object
-      properties:
-        status:
-          example: 201
-          description: The status of the response
-          allOf:
-          - $ref: '#/components/schemas/HttpStatus'
-        message:
-          type: string
-          example: success
-          description: The message of the response
-        hasMore:
-          type: boolean
-          example: 'true'
-          description: An indicator if there are more items to return
-        data:
-          description: The requested merchants data
-          type: array
-          items:
-            $ref: '#/components/schemas/MerchantResponseDto'
-      required:
-      - status
-      - message
-      - hasMore
-      - data
     HttpStatus:
       type: number
       enum:
@@ -401,6 +385,22 @@ components:
       - 507
       - 508
       description: The status of the response
+    DeactivateMerchantDto:
+      type: object
+      properties:
+        deactivationType:
+          description: Type of deactivation
+          example: postingDate
+          allOf:
+          - $ref: '#/components/schemas/DeactivationType'
+        deactivationDate:
+          format: date-time
+          type: string
+          description: Date when the deactivation should take effect
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+      - deactivationType
+      - deactivationDate
   securitySchemes:
     bearer:
       scheme: bearer

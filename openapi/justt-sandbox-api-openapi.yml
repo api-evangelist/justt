@@ -134,6 +134,35 @@ components:
       - status
       - message
       - id
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
+    DataType:
+      type: string
+      enum:
+      - chargebacks
+      - transactions
+      - refunds
+      - early_fraud_warnings
+      - card_checks
+      - payment_actions
+      - issuer_notes
+      description: Type of data to process
     PSP:
       type: string
       enum:
@@ -205,24 +234,6 @@ components:
       - get_net
       - bbva
       - coinflow
-    ErrorResponseDTO:
-      type: object
-      properties:
-        status:
-          type: number
-          example: 500
-          description: Error status of the response
-        message:
-          type: string
-          example: Internal Server Error
-          description: Description of the error that occurred
-        errorId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-          description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
     RawDataRequestDto:
       type: object
       properties:
@@ -258,17 +269,6 @@ components:
       - requestTimeStamp
       - rawData
       - dataSourceVersion
-    DataType:
-      type: string
-      enum:
-      - chargebacks
-      - transactions
-      - refunds
-      - early_fraud_warnings
-      - card_checks
-      - payment_actions
-      - issuer_notes
-      description: Type of data to process
   securitySchemes:
     bearer:
       scheme: bearer

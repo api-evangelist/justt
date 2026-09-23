@@ -390,77 +390,31 @@ paths:
       - Chargebacks
 components:
   schemas:
-    PSP:
+    InternalStatus:
       type: string
       enum:
-      - tabapay
-      - nmi
-      - stripe
-      - paypal
-      - amex
-      - braintree
-      - shopify_payments
-      - amazon_pay
-      - adyen
-      - other
-      - cardpointe
-      - checkout
-      - omnipay
-      - acquiring
-      - chase
-      - nuvei
-      - authorizenet
-      - mollie
-      - firstdata
-      - fiserv
-      - elavon
-      - bluesnap
-      - vantiv
-      - dlocal
-      - payu
-      - payu-latam
-      - worldpay_mai
-      - worldpay_iq
-      - payroc
-      - citi
-      - merlink_drs
-      - credorax
-      - dalenys
-      - worldpay_cb911
-      - worldpay_accertify
-      - discover
-      - elavon_payment_insider
-      - elavon_connect
-      - shift4
-      - payplug
-      - global_payments
-      - square
-      - ebanx
-      - zen
-      - payments_hub
-      - ems_data
-      - maverick
-      - corvia
-      - payroc_canada
-      - tap
-      - sabadell
-      - kushki
-      - worldpay
-      - klarna
-      - paysafe
-      - airwallex
-      - mangopay
-      - ecommpay
-      - iyzico
-      - lighthouse
-      - moka
-      - worldpay_wdp
-      - finix
-      - justt_sandbox
-      - paynearme
-      - get_net
-      - bbva
-      - coinflow
+      - waiting_for_data
+      - building_evidence
+      - pending_psp_results
+      - not_represented
+    EvidenceSubmissionLifecycle:
+      type: string
+      enum:
+      - created
+      - inProgress
+      - failed
+      - succeeded
+    PSPStatus:
+      type: string
+      enum:
+      - needs_response
+      - under_review
+      - won
+      - lost
+      - not_applicable
+      - evidence_not_submitted_by_psp
+      - split
+      - unknown
     ShouldFightDto:
       type: object
       properties:
@@ -469,6 +423,26 @@ components:
           description: Should Justt fight for the given chargeback
       required:
       - shouldFight
+    Object:
+      type: object
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
     CreateResponseDTO:
       type: object
       properties:
@@ -544,13 +518,108 @@ components:
       - status
       - message
       - id
-    InternalStatus:
+    LifecycleStage:
       type: string
       enum:
-      - waiting_for_data
-      - building_evidence
-      - pending_psp_results
-      - not_represented
+      - alert
+      - inquiry
+      - claim
+      - chargeback
+      - second_chargeback
+      - third_chargeback
+      - other
+      description: The stage of the chargebacks lifecycle
+    PSP:
+      type: string
+      enum:
+      - tabapay
+      - nmi
+      - stripe
+      - paypal
+      - amex
+      - braintree
+      - shopify_payments
+      - amazon_pay
+      - adyen
+      - other
+      - cardpointe
+      - checkout
+      - omnipay
+      - acquiring
+      - chase
+      - nuvei
+      - authorizenet
+      - mollie
+      - firstdata
+      - fiserv
+      - elavon
+      - bluesnap
+      - vantiv
+      - dlocal
+      - payu
+      - payu-latam
+      - worldpay_mai
+      - worldpay_iq
+      - payroc
+      - citi
+      - merlink_drs
+      - credorax
+      - dalenys
+      - worldpay_cb911
+      - worldpay_accertify
+      - discover
+      - elavon_payment_insider
+      - elavon_connect
+      - shift4
+      - payplug
+      - global_payments
+      - square
+      - ebanx
+      - zen
+      - payments_hub
+      - ems_data
+      - maverick
+      - corvia
+      - payroc_canada
+      - tap
+      - sabadell
+      - kushki
+      - worldpay
+      - klarna
+      - paysafe
+      - airwallex
+      - mangopay
+      - ecommpay
+      - iyzico
+      - lighthouse
+      - moka
+      - worldpay_wdp
+      - finix
+      - justt_sandbox
+      - paynearme
+      - get_net
+      - bbva
+      - coinflow
+    GetChargebackResponseDto:
+      type: object
+      properties:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        data:
+          description: The requested chargeback data
+          allOf:
+          - $ref: '#/components/schemas/ChargebackDto'
+      required:
+      - status
+      - message
+      - data
     AcceptChargebackStatusDto:
       type: object
       properties:
@@ -578,107 +647,12 @@ components:
       - referenceAccountId
       - status
       - acceptedAt
-    GetChargebackResponseDto:
-      type: object
-      properties:
-        status:
-          example: 201
-          description: The status of the response
-          allOf:
-          - $ref: '#/components/schemas/HttpStatus'
-        message:
-          type: string
-          example: success
-          description: The message of the response
-        data:
-          description: The requested chargeback data
-          allOf:
-          - $ref: '#/components/schemas/ChargebackDto'
-      required:
-      - status
-      - message
-      - data
-    LifecycleStage:
-      type: string
-      enum:
-      - alert
-      - inquiry
-      - claim
-      - chargeback
-      - second_chargeback
-      - third_chargeback
-      - other
-      description: The stage of the chargebacks lifecycle
-    PSPStatus:
-      type: string
-      enum:
-      - needs_response
-      - under_review
-      - won
-      - lost
-      - not_applicable
-      - evidence_not_submitted_by_psp
-      - split
-      - unknown
-    ErrorResponseDTO:
-      type: object
-      properties:
-        status:
-          type: number
-          example: 500
-          description: Error status of the response
-        message:
-          type: string
-          example: Internal Server Error
-          description: Description of the error that occurred
-        errorId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-          description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
-    GetChargebacksResponseDto:
-      type: object
-      properties:
-        status:
-          example: 201
-          description: The status of the response
-          allOf:
-          - $ref: '#/components/schemas/HttpStatus'
-        message:
-          type: string
-          example: success
-          description: The message of the response
-        hasMore:
-          type: boolean
-          example: 'true'
-          description: An indicator if there are more items to return
-        data:
-          description: The requested chargebacks data
-          type: array
-          items:
-            $ref: '#/components/schemas/ChargebackDto'
-      required:
-      - status
-      - message
-      - hasMore
-      - data
-    Object:
-      type: object
     DisputeOptimizationResult:
       type: string
       enum:
       - Fight
       - Accept
       description: The ROI based recommendation of Justt for this chargeback, Reach out to the Justt team To learn more
-    EvidenceSubmissionLifecycle:
-      type: string
-      enum:
-      - created
-      - inProgress
-      - failed
-      - succeeded
     HttpStatus:
       type: number
       enum:
@@ -738,6 +712,32 @@ components:
       - 507
       - 508
       description: The status of the response
+    GetChargebacksResponseDto:
+      type: object
+      properties:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
+          type: string
+          example: success
+          description: The message of the response
+        hasMore:
+          type: boolean
+          example: 'true'
+          description: An indicator if there are more items to return
+        data:
+          description: The requested chargebacks data
+          type: array
+          items:
+            $ref: '#/components/schemas/ChargebackDto'
+      required:
+      - status
+      - message
+      - hasMore
+      - data
     ChargebackDto:
       type: object
       properties:

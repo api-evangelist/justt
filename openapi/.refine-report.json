@@ -1,0 +1,49 @@
+{
+  "provider": "justt",
+  "sources": [
+    "_original/justt-pre-chargeback-alerts-openapi-original.json",
+    "_original/justt-rest-api-openapi-original.json"
+  ],
+  "outputs": [
+    "justt-pre-chargeback-alerts-api-openapi.yml",
+    "justt-chargebacks-api-openapi.yml",
+    "justt-data-subjects-api-openapi.yml",
+    "justt-evidence-api-openapi.yml",
+    "justt-files-api-openapi.yml",
+    "justt-integrations-api-openapi.yml",
+    "justt-merchants-api-openapi.yml",
+    "justt-sandbox-api-openapi.yml",
+    "justt-transactions-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "justt-pre-chargeback-alerts-openapi-original.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "justt-pre-chargeback-alerts-openapi-original.json: declared missing tag: Pre-chargeback Alerts",
+    "justt-rest-api-openapi-original.json: upgraded openapi 3.0.0 -> OpenAPI 3.2.0",
+    "justt-rest-api-openapi-original.json: declared missing tag: Chargebacks",
+    "justt-rest-api-openapi-original.json: declared missing tag: Data Subjects",
+    "justt-rest-api-openapi-original.json: declared missing tag: Evidence",
+    "justt-rest-api-openapi-original.json: declared missing tag: Files",
+    "justt-rest-api-openapi-original.json: declared missing tag: Integrations",
+    "justt-rest-api-openapi-original.json: declared missing tag: Merchants",
+    "justt-rest-api-openapi-original.json: declared missing tag: Pre-chargeback Alerts",
+    "justt-rest-api-openapi-original.json: declared missing tag: Sandbox",
+    "justt-rest-api-openapi-original.json: declared missing tag: Transactions",
+    "tag 'Pre-chargeback Alerts' spans 2 source specs (justt-pre-chargeback-alerts-openapi-original.json, justt-rest-api-openapi-original.json): per-path servers applied",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "justt-chargebacks-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-data-subjects-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-evidence-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-files-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-integrations-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-merchants-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-pre-chargeback-alerts-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-sandbox-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "justt-transactions-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

@@ -120,6 +120,13 @@ paths:
       - Evidence
 components:
   schemas:
+    EvidenceSubmissionLifecycle:
+      type: string
+      enum:
+      - created
+      - inProgress
+      - failed
+      - succeeded
     SubmitEvidenceDto:
       type: object
       properties:
@@ -203,6 +210,24 @@ components:
       - status
       - message
       - id
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
     EvidenceSubmissionStatusDto:
       type: object
       properties:
@@ -237,31 +262,6 @@ components:
       - referenceAccountId
       - status
       - submittedAt
-    ErrorResponseDTO:
-      type: object
-      properties:
-        status:
-          type: number
-          example: 500
-          description: Error status of the response
-        message:
-          type: string
-          example: Internal Server Error
-          description: Description of the error that occurred
-        errorId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-          description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
-    EvidenceSubmissionLifecycle:
-      type: string
-      enum:
-      - created
-      - inProgress
-      - failed
-      - succeeded
   securitySchemes:
     bearer:
       scheme: bearer
