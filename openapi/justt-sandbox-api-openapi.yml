@@ -59,6 +59,88 @@ paths:
       - Sandbox
 components:
   schemas:
+    PSP:
+      type: string
+      enum:
+      - tabapay
+      - nmi
+      - stripe
+      - paypal
+      - amex
+      - braintree
+      - shopify_payments
+      - amazon_pay
+      - adyen
+      - other
+      - cardpointe
+      - checkout
+      - omnipay
+      - acquiring
+      - chase
+      - nuvei
+      - authorizenet
+      - mollie
+      - firstdata
+      - fiserv
+      - elavon
+      - bluesnap
+      - vantiv
+      - dlocal
+      - payu
+      - payu-latam
+      - worldpay_mai
+      - worldpay_iq
+      - payroc
+      - citi
+      - merlink_drs
+      - credorax
+      - dalenys
+      - worldpay_cb911
+      - worldpay_accertify
+      - discover
+      - elavon_payment_insider
+      - elavon_connect
+      - shift4
+      - payplug
+      - global_payments
+      - square
+      - ebanx
+      - zen
+      - payments_hub
+      - ems_data
+      - maverick
+      - corvia
+      - payroc_canada
+      - tap
+      - sabadell
+      - kushki
+      - worldpay
+      - klarna
+      - paysafe
+      - airwallex
+      - mangopay
+      - ecommpay
+      - iyzico
+      - lighthouse
+      - moka
+      - worldpay_wdp
+      - finix
+      - justt_sandbox
+      - paynearme
+      - get_net
+      - bbva
+      - coinflow
+    DataType:
+      type: string
+      enum:
+      - chargebacks
+      - transactions
+      - refunds
+      - early_fraud_warnings
+      - card_checks
+      - payment_actions
+      - issuer_notes
+      description: Type of data to process
     CreateResponseDTO:
       type: object
       properties:
@@ -134,106 +216,6 @@ components:
       - status
       - message
       - id
-    ErrorResponseDTO:
-      type: object
-      properties:
-        status:
-          type: number
-          example: 500
-          description: Error status of the response
-        message:
-          type: string
-          example: Internal Server Error
-          description: Description of the error that occurred
-        errorId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-          description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
-    DataType:
-      type: string
-      enum:
-      - chargebacks
-      - transactions
-      - refunds
-      - early_fraud_warnings
-      - card_checks
-      - payment_actions
-      - issuer_notes
-      description: Type of data to process
-    PSP:
-      type: string
-      enum:
-      - tabapay
-      - nmi
-      - stripe
-      - paypal
-      - amex
-      - braintree
-      - shopify_payments
-      - amazon_pay
-      - adyen
-      - other
-      - cardpointe
-      - checkout
-      - omnipay
-      - acquiring
-      - chase
-      - nuvei
-      - authorizenet
-      - mollie
-      - firstdata
-      - fiserv
-      - elavon
-      - bluesnap
-      - vantiv
-      - dlocal
-      - payu
-      - payu-latam
-      - worldpay_mai
-      - worldpay_iq
-      - payroc
-      - citi
-      - merlink_drs
-      - credorax
-      - dalenys
-      - worldpay_cb911
-      - worldpay_accertify
-      - discover
-      - elavon_payment_insider
-      - elavon_connect
-      - shift4
-      - payplug
-      - global_payments
-      - square
-      - ebanx
-      - zen
-      - payments_hub
-      - ems_data
-      - maverick
-      - corvia
-      - payroc_canada
-      - tap
-      - sabadell
-      - kushki
-      - worldpay
-      - klarna
-      - paysafe
-      - airwallex
-      - mangopay
-      - ecommpay
-      - iyzico
-      - lighthouse
-      - moka
-      - worldpay_wdp
-      - finix
-      - justt_sandbox
-      - paynearme
-      - get_net
-      - bbva
-      - coinflow
     RawDataRequestDto:
       type: object
       properties:
@@ -269,6 +251,24 @@ components:
       - requestTimeStamp
       - rawData
       - dataSourceVersion
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
   securitySchemes:
     bearer:
       scheme: bearer

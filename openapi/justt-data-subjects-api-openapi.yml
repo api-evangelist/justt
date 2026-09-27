@@ -78,6 +78,21 @@ components:
       - email
       - firstName
       - lastName
+    RestApiResponseDTO:
+      type: object
+      properties:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
+          type: string
+          example: success
+          description: The message of the response
+      required:
+      - status
+      - message
     HttpStatus:
       type: number
       enum:
@@ -152,21 +167,6 @@ components:
           type: string
           example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
           description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
-    RestApiResponseDTO:
-      type: object
-      properties:
-        status:
-          example: 201
-          description: The status of the response
-          allOf:
-          - $ref: '#/components/schemas/HttpStatus'
-        message:
-          type: string
-          example: success
-          description: The message of the response
       required:
       - status
       - message
