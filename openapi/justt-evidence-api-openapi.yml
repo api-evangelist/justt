@@ -120,55 +120,6 @@ paths:
       - Evidence
 components:
   schemas:
-    EvidenceSubmissionLifecycle:
-      type: string
-      enum:
-      - created
-      - inProgress
-      - failed
-      - succeeded
-    EvidenceSubmissionStatusDto:
-      type: object
-      properties:
-        submitEvidenceId:
-          type: string
-          example: sub_1234567890
-        fileId:
-          type: string
-          example: file_1234567890
-        id:
-          type: string
-          example: cbk_9f1e2d3c4b5a
-          description: The chargeback identifier
-        referenceAccountId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-        status:
-          example: inProgress
-          allOf:
-          - $ref: '#/components/schemas/EvidenceSubmissionLifecycle'
-        submittedAt:
-          type: string
-          format: date-time
-          example: '2025-01-15T12:34:56.789Z'
-        error:
-          type: string
-          example: Network timeout
-      required:
-      - submitEvidenceId
-      - fileId
-      - id
-      - referenceAccountId
-      - status
-      - submittedAt
-    SubmitEvidenceDto:
-      type: object
-      properties:
-        fileId:
-          type: string
-          example: file_1234567890
-      required:
-      - fileId
     CreateResponseDTO:
       type: object
       properties:
@@ -244,6 +195,55 @@ components:
       - status
       - message
       - id
+    EvidenceSubmissionStatusDto:
+      type: object
+      properties:
+        submitEvidenceId:
+          type: string
+          example: sub_1234567890
+        fileId:
+          type: string
+          example: file_1234567890
+        id:
+          type: string
+          example: cbk_9f1e2d3c4b5a
+          description: The chargeback identifier
+        referenceAccountId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+        status:
+          example: inProgress
+          allOf:
+          - $ref: '#/components/schemas/EvidenceSubmissionLifecycle'
+        submittedAt:
+          type: string
+          format: date-time
+          example: '2025-01-15T12:34:56.789Z'
+        error:
+          type: string
+          example: Network timeout
+      required:
+      - submitEvidenceId
+      - fileId
+      - id
+      - referenceAccountId
+      - status
+      - submittedAt
+    EvidenceSubmissionLifecycle:
+      type: string
+      enum:
+      - created
+      - inProgress
+      - failed
+      - succeeded
+    SubmitEvidenceDto:
+      type: object
+      properties:
+        fileId:
+          type: string
+          example: file_1234567890
+      required:
+      - fileId
     ErrorResponseDTO:
       type: object
       properties:

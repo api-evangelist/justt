@@ -203,58 +203,6 @@ paths:
       - Integrations
 components:
   schemas:
-    CreateIntegrationResponseDto:
-      type: object
-      properties:
-        integrationId:
-          type: string
-          description: Integration ID
-          example: '446655440000'
-      required:
-      - integrationId
-    SupportedPSP:
-      type: string
-      enum:
-      - stripe
-      - braintree
-      - paypal
-      - adyen
-      - justt_sandbox
-      description: PSP source type
-    IntegrationResponseDto:
-      type: object
-      properties:
-        integrationId:
-          type: string
-          description: Integration ID
-          example: '446655440000'
-        source:
-          description: PSP source type
-          example: stripe
-          allOf:
-          - $ref: '#/components/schemas/SupportedPSP'
-        status:
-          description: Current status of the integration
-          example: SUCCESSFUL
-          allOf:
-          - $ref: '#/components/schemas/MerchantIntegrationStatusEnum'
-        goLiveDate:
-          format: date-time
-          type: string
-          description: Go live date of the integration
-          example: '2024-01-01T00:00:00.000Z'
-      required:
-      - integrationId
-      - source
-      - status
-    MerchantIntegrationStatusEnum:
-      type: string
-      enum:
-      - PENDING
-      - SUCCESSFUL
-      - FAILED
-      - INACTIVE
-      description: Current status of the integration
     DeactivateIntegrationDto:
       type: object
       properties:
@@ -282,6 +230,15 @@ components:
       - postingDate
       - dueDate
       description: Type of deactivation
+    SupportedPSP:
+      type: string
+      enum:
+      - stripe
+      - braintree
+      - paypal
+      - adyen
+      - justt_sandbox
+      description: PSP source type
     IntegrationConnectionTypeEnum:
       type: string
       enum:
@@ -293,6 +250,67 @@ components:
       - APIKEY
       - sftp
       description: "Secret type for the PSP integration. Each secret type has specific authentication requirements:\n\n**Available Secret Types:**\n\n**APIKEY_ONLY**: Single API key authentication\n   Required fields: apiKey\n   Example:\n   ```json\n   {\n  \"apiKey\": \"APIKEY280PRO22\"\n}\n   ```\n\n**PUBLIC_SECRET_KEY**: Public and secret key pair authentication\n   Required fields: secretKey Optional: publicKey\n   Example:\n   ```json\n   {\n  \"secretKey\": \"SECRET_KEY_HERE\",\n  \"publicKey\": \"PUBLIC_KEY_HERE\"\n}\n   ```\n\n**BASIC_AUTH**: Basic authentication with client credentials\n   Required fields: clientId, clientSecret\n   Example:\n   ```json\n   {\n  \"clientId\": \"your_client_id\",\n  \"clientSecret\": \"your_client_secret\"\n}\n   ```\n\n**USERNAME_PASSWORD**: Username and password authentication\n   Required fields: username, password\n   Example:\n   ```json\n   {\n  \"username\": \"your_username\",\n  \"password\": \"your_password\"\n}\n   ```\n\n**HMAC**: HMAC signature based authentication\n   Required fields: hmac, apiKey Optional: merchantCode, accountCode\n   Example:\n   ```json\n   {\n  \"hmac\": \"HMAC92749798124\",\n  \"apiKey\": \"APIKEY280PRO22\",\n  \"merchantCode\": \"MERCHANT_CODE\",\n  \"accountCode\": \"ACCOUNT_CODE\"\n}\n   ```\n\n**APIKEY**: API key authentication with additional fields\n   Required fields: apiKey Optional: storeUrl, shopName\n   Example:\n   ```json\n   {\n  \"apiKey\": \"shpca_your_api_key\",\n  \"storeUrl\": \"https://your-store.myshopify.com\",\n  \"shopName\": \"your-store\"\n}\n   ```\n\n**sftp**: SFTP authentication: username with either a password or a private key. Paste the raw private key (PEM) — it is base64-encoded automatically on save. An optional passphrase may accompany the key.\n   Required fields: username Optional: password, privateKey, passphrase\n   Example:\n   ```json\n   {\n  \"username\": \"sftp_user\",\n  \"privateKey\": \"REDACTED_PRIVATE_KEY_EXAMPLE\",\n  \"passphrase\": \"optional-key-passphrase\"\n}\n   ```"
+    MerchantIntegrationStatusEnum:
+      type: string
+      enum:
+      - PENDING
+      - SUCCESSFUL
+      - FAILED
+      - INACTIVE
+      description: Current status of the integration
+    CreateIntegrationResponseDto:
+      type: object
+      properties:
+        integrationId:
+          type: string
+          description: Integration ID
+          example: '446655440000'
+      required:
+      - integrationId
+    IntegrationResponseDto:
+      type: object
+      properties:
+        integrationId:
+          type: string
+          description: Integration ID
+          example: '446655440000'
+        source:
+          description: PSP source type
+          example: stripe
+          allOf:
+          - $ref: '#/components/schemas/SupportedPSP'
+        status:
+          description: Current status of the integration
+          example: SUCCESSFUL
+          allOf:
+          - $ref: '#/components/schemas/MerchantIntegrationStatusEnum'
+        goLiveDate:
+          format: date-time
+          type: string
+          description: Go live date of the integration
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+      - integrationId
+      - source
+      - status
+    ErrorResponseDTO:
+      type: object
+      properties:
+        status:
+          type: number
+          example: 500
+          description: Error status of the response
+        message:
+          type: string
+          example: Internal Server Error
+          description: Description of the error that occurred
+        errorId:
+          type: string
+          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
+          description: A unique identifier you can provide to our support for a better troubleshooting process
+      required:
+      - status
+      - message
     CreateIntegrationDto:
       type: object
       properties:
@@ -338,24 +356,6 @@ components:
       - source
       - secretType
       - secretPayload
-    ErrorResponseDTO:
-      type: object
-      properties:
-        status:
-          type: number
-          example: 500
-          description: Error status of the response
-        message:
-          type: string
-          example: Internal Server Error
-          description: Description of the error that occurred
-        errorId:
-          type: string
-          example: 04318fb0-e4ff-4712-972e-4db99b3fb23c
-          description: A unique identifier you can provide to our support for a better troubleshooting process
-      required:
-      - status
-      - message
   securitySchemes:
     bearer:
       scheme: bearer

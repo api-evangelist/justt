@@ -59,6 +59,41 @@ paths:
       - Sandbox
 components:
   schemas:
+    RawDataRequestDto:
+      type: object
+      properties:
+        dataSource:
+          description: Data source for example the PSP (Payment Service Provider) name
+          example: stripe
+          allOf:
+          - $ref: '#/components/schemas/PSP'
+        dataType:
+          description: Type of data to process
+          example: chargebacks
+          allOf:
+          - $ref: '#/components/schemas/DataType'
+        integrationId:
+          type: string
+          description: The id will be provide by Justt
+          example: 6624da56a16c7bad2a2b682a
+          title: Unique identifier for the integration
+        requestTimeStamp:
+          type: string
+          description: Timestamp of the request in ISO 8601 format
+        rawData:
+          type: object
+          description: Raw data in key-value format
+        dataSourceVersion:
+          type: string
+          description: Version of the API used to fetch the data
+          example: v1
+      required:
+      - dataSource
+      - dataType
+      - integrationId
+      - requestTimeStamp
+      - rawData
+      - dataSourceVersion
     PSP:
       type: string
       enum:
@@ -130,17 +165,6 @@ components:
       - get_net
       - bbva
       - coinflow
-    DataType:
-      type: string
-      enum:
-      - chargebacks
-      - transactions
-      - refunds
-      - early_fraud_warnings
-      - card_checks
-      - payment_actions
-      - issuer_notes
-      description: Type of data to process
     CreateResponseDTO:
       type: object
       properties:
@@ -216,41 +240,17 @@ components:
       - status
       - message
       - id
-    RawDataRequestDto:
-      type: object
-      properties:
-        dataSource:
-          description: Data source for example the PSP (Payment Service Provider) name
-          example: stripe
-          allOf:
-          - $ref: '#/components/schemas/PSP'
-        dataType:
-          description: Type of data to process
-          example: chargebacks
-          allOf:
-          - $ref: '#/components/schemas/DataType'
-        integrationId:
-          type: string
-          description: The id will be provide by Justt
-          example: 6624da56a16c7bad2a2b682a
-          title: Unique identifier for the integration
-        requestTimeStamp:
-          type: string
-          description: Timestamp of the request in ISO 8601 format
-        rawData:
-          type: object
-          description: Raw data in key-value format
-        dataSourceVersion:
-          type: string
-          description: Version of the API used to fetch the data
-          example: v1
-      required:
-      - dataSource
-      - dataType
-      - integrationId
-      - requestTimeStamp
-      - rawData
-      - dataSourceVersion
+    DataType:
+      type: string
+      enum:
+      - chargebacks
+      - transactions
+      - refunds
+      - early_fraud_warnings
+      - card_checks
+      - payment_actions
+      - issuer_notes
+      description: Type of data to process
     ErrorResponseDTO:
       type: object
       properties:

@@ -184,6 +184,105 @@ paths:
       - Merchants
 components:
   schemas:
+    CreateMerchantResponseDto:
+      type: object
+      properties:
+        merchantUuid:
+          type: string
+          description: UUID of the created merchant
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+      required:
+      - merchantUuid
+    DeactivationType:
+      type: string
+      enum:
+      - postingDate
+      - dueDate
+      description: Type of deactivation
+    DeactivateMerchantDto:
+      type: object
+      properties:
+        deactivationType:
+          description: Type of deactivation
+          example: postingDate
+          allOf:
+          - $ref: '#/components/schemas/DeactivationType'
+        deactivationDate:
+          format: date-time
+          type: string
+          description: Date when the deactivation should take effect
+          example: '2024-01-01T00:00:00.000Z'
+      required:
+      - deactivationType
+      - deactivationDate
+    CreateMerchantDto:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          description: The name of the merchant
+          example: Example Store Name
+        websiteUrl:
+          type: string
+          description: The website URL of the merchant
+          example: https://example.com/
+        email:
+          type: string
+          description: Email address of the merchant contact
+          example: contact@example.com
+        firstName:
+          type: string
+          description: First name of the merchant contact
+          example: John
+        lastName:
+          type: string
+          description: Last name of the merchant contact
+          example: Doe
+        referenceId:
+          type: string
+          description: External reference ID for the merchant
+          example: EXAMPLE_001
+        mcc:
+          type: string
+          description: Merchant Category Code (MCC)
+          example: '5411'
+        mccDescription:
+          type: string
+          description: Description of the Merchant Category Code
+          example: Grocery Stores, Supermarkets
+      required:
+      - merchantName
+      - websiteUrl
+      - email
+      - firstName
+      - lastName
+    MerchantResponseDto:
+      type: object
+      properties:
+        merchantName:
+          type: string
+          description: The name of the merchant
+          example: Acme Corporation
+        referenceId:
+          type: string
+          description: External reference ID for the merchant
+          example: MERCHANT_001
+        status:
+          description: Current status of the merchant
+          example: Active
+          allOf:
+          - $ref: '#/components/schemas/MerchantOverallStatus'
+        merchantUuid:
+          type: string
+          description: UUID of the merchant
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+      required:
+      - merchantName
+      - referenceId
+      - status
+      - merchantUuid
     MerchantOverallStatus:
       type: string
       enum:
@@ -199,16 +298,32 @@ components:
       - PartiallyActiveByError
       - PartiallyActiveByValidation
       description: Current status of the merchant
-    CreateMerchantResponseDto:
+    GetMerchantsResponseDto:
       type: object
       properties:
-        merchantUuid:
+        status:
+          example: 201
+          description: The status of the response
+          allOf:
+          - $ref: '#/components/schemas/HttpStatus'
+        message:
           type: string
-          description: UUID of the created merchant
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
+          example: success
+          description: The message of the response
+        hasMore:
+          type: boolean
+          example: 'true'
+          description: An indicator if there are more items to return
+        data:
+          description: The requested merchants data
+          type: array
+          items:
+            $ref: '#/components/schemas/MerchantResponseDto'
       required:
-      - merchantUuid
+      - status
+      - message
+      - hasMore
+      - data
     ErrorResponseDTO:
       type: object
       properties:
@@ -227,22 +342,6 @@ components:
       required:
       - status
       - message
-    DeactivateMerchantDto:
-      type: object
-      properties:
-        deactivationType:
-          description: Type of deactivation
-          example: postingDate
-          allOf:
-          - $ref: '#/components/schemas/DeactivationType'
-        deactivationDate:
-          format: date-time
-          type: string
-          description: Date when the deactivation should take effect
-          example: '2024-01-01T00:00:00.000Z'
-      required:
-      - deactivationType
-      - deactivationDate
     HttpStatus:
       type: number
       enum:
@@ -302,105 +401,6 @@ components:
       - 507
       - 508
       description: The status of the response
-    CreateMerchantDto:
-      type: object
-      properties:
-        merchantName:
-          type: string
-          description: The name of the merchant
-          example: Example Store Name
-        websiteUrl:
-          type: string
-          description: The website URL of the merchant
-          example: https://example.com/
-        email:
-          type: string
-          description: Email address of the merchant contact
-          example: contact@example.com
-        firstName:
-          type: string
-          description: First name of the merchant contact
-          example: John
-        lastName:
-          type: string
-          description: Last name of the merchant contact
-          example: Doe
-        referenceId:
-          type: string
-          description: External reference ID for the merchant
-          example: EXAMPLE_001
-        mcc:
-          type: string
-          description: Merchant Category Code (MCC)
-          example: '5411'
-        mccDescription:
-          type: string
-          description: Description of the Merchant Category Code
-          example: Grocery Stores, Supermarkets
-      required:
-      - merchantName
-      - websiteUrl
-      - email
-      - firstName
-      - lastName
-    DeactivationType:
-      type: string
-      enum:
-      - postingDate
-      - dueDate
-      description: Type of deactivation
-    GetMerchantsResponseDto:
-      type: object
-      properties:
-        status:
-          example: 201
-          description: The status of the response
-          allOf:
-          - $ref: '#/components/schemas/HttpStatus'
-        message:
-          type: string
-          example: success
-          description: The message of the response
-        hasMore:
-          type: boolean
-          example: 'true'
-          description: An indicator if there are more items to return
-        data:
-          description: The requested merchants data
-          type: array
-          items:
-            $ref: '#/components/schemas/MerchantResponseDto'
-      required:
-      - status
-      - message
-      - hasMore
-      - data
-    MerchantResponseDto:
-      type: object
-      properties:
-        merchantName:
-          type: string
-          description: The name of the merchant
-          example: Acme Corporation
-        referenceId:
-          type: string
-          description: External reference ID for the merchant
-          example: MERCHANT_001
-        status:
-          description: Current status of the merchant
-          example: Active
-          allOf:
-          - $ref: '#/components/schemas/MerchantOverallStatus'
-        merchantUuid:
-          type: string
-          description: UUID of the merchant
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-      required:
-      - merchantName
-      - referenceId
-      - status
-      - merchantUuid
   securitySchemes:
     bearer:
       scheme: bearer
