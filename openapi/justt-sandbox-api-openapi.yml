@@ -59,112 +59,17 @@ paths:
       - Sandbox
 components:
   schemas:
-    RawDataRequestDto:
-      type: object
-      properties:
-        dataSource:
-          description: Data source for example the PSP (Payment Service Provider) name
-          example: stripe
-          allOf:
-          - $ref: '#/components/schemas/PSP'
-        dataType:
-          description: Type of data to process
-          example: chargebacks
-          allOf:
-          - $ref: '#/components/schemas/DataType'
-        integrationId:
-          type: string
-          description: The id will be provide by Justt
-          example: 6624da56a16c7bad2a2b682a
-          title: Unique identifier for the integration
-        requestTimeStamp:
-          type: string
-          description: Timestamp of the request in ISO 8601 format
-        rawData:
-          type: object
-          description: Raw data in key-value format
-        dataSourceVersion:
-          type: string
-          description: Version of the API used to fetch the data
-          example: v1
-      required:
-      - dataSource
-      - dataType
-      - integrationId
-      - requestTimeStamp
-      - rawData
-      - dataSourceVersion
-    PSP:
+    DataType:
       type: string
       enum:
-      - tabapay
-      - nmi
-      - stripe
-      - paypal
-      - amex
-      - braintree
-      - shopify_payments
-      - amazon_pay
-      - adyen
-      - other
-      - cardpointe
-      - checkout
-      - omnipay
-      - acquiring
-      - chase
-      - nuvei
-      - authorizenet
-      - mollie
-      - firstdata
-      - fiserv
-      - elavon
-      - bluesnap
-      - vantiv
-      - dlocal
-      - payu
-      - payu-latam
-      - worldpay_mai
-      - worldpay_iq
-      - payroc
-      - citi
-      - merlink_drs
-      - credorax
-      - dalenys
-      - worldpay_cb911
-      - worldpay_accertify
-      - discover
-      - elavon_payment_insider
-      - elavon_connect
-      - shift4
-      - payplug
-      - global_payments
-      - square
-      - ebanx
-      - zen
-      - payments_hub
-      - ems_data
-      - maverick
-      - corvia
-      - payroc_canada
-      - tap
-      - sabadell
-      - kushki
-      - worldpay
-      - klarna
-      - paysafe
-      - airwallex
-      - mangopay
-      - ecommpay
-      - iyzico
-      - lighthouse
-      - moka
-      - worldpay_wdp
-      - finix
-      - justt_sandbox
-      - paynearme
-      - get_net
-      - bbva
-      - coinflow
+      - chargebacks
+      - transactions
+      - refunds
+      - early_fraud_warnings
+      - card_checks
+      - payment_actions
+      - issuer_notes
+      description: Type of data to process
     CreateResponseDTO:
       type: object
       properties:
@@ -240,17 +145,6 @@ components:
       - status
       - message
       - id
-    DataType:
-      type: string
-      enum:
-      - chargebacks
-      - transactions
-      - refunds
-      - early_fraud_warnings
-      - card_checks
-      - payment_actions
-      - issuer_notes
-      description: Type of data to process
     ErrorResponseDTO:
       type: object
       properties:
@@ -269,6 +163,112 @@ components:
       required:
       - status
       - message
+    PSP:
+      type: string
+      enum:
+      - tabapay
+      - nmi
+      - stripe
+      - paypal
+      - amex
+      - braintree
+      - shopify_payments
+      - amazon_pay
+      - adyen
+      - other
+      - cardpointe
+      - checkout
+      - omnipay
+      - acquiring
+      - chase
+      - nuvei
+      - authorizenet
+      - mollie
+      - firstdata
+      - fiserv
+      - elavon
+      - bluesnap
+      - vantiv
+      - dlocal
+      - payu
+      - payu-latam
+      - worldpay_mai
+      - worldpay_iq
+      - payroc
+      - citi
+      - merlink_drs
+      - credorax
+      - dalenys
+      - worldpay_cb911
+      - worldpay_accertify
+      - discover
+      - elavon_payment_insider
+      - elavon_connect
+      - shift4
+      - payplug
+      - global_payments
+      - square
+      - ebanx
+      - zen
+      - payments_hub
+      - ems_data
+      - maverick
+      - corvia
+      - payroc_canada
+      - tap
+      - sabadell
+      - kushki
+      - worldpay
+      - klarna
+      - paysafe
+      - airwallex
+      - mangopay
+      - ecommpay
+      - iyzico
+      - lighthouse
+      - moka
+      - worldpay_wdp
+      - finix
+      - justt_sandbox
+      - paynearme
+      - get_net
+      - bbva
+      - coinflow
+    RawDataRequestDto:
+      type: object
+      properties:
+        dataSource:
+          description: Data source for example the PSP (Payment Service Provider) name
+          example: stripe
+          allOf:
+          - $ref: '#/components/schemas/PSP'
+        dataType:
+          description: Type of data to process
+          example: chargebacks
+          allOf:
+          - $ref: '#/components/schemas/DataType'
+        integrationId:
+          type: string
+          description: The id will be provide by Justt
+          example: 6624da56a16c7bad2a2b682a
+          title: Unique identifier for the integration
+        requestTimeStamp:
+          type: string
+          description: Timestamp of the request in ISO 8601 format
+        rawData:
+          type: object
+          description: Raw data in key-value format
+        dataSourceVersion:
+          type: string
+          description: Version of the API used to fetch the data
+          example: v1
+      required:
+      - dataSource
+      - dataType
+      - integrationId
+      - requestTimeStamp
+      - rawData
+      - dataSourceVersion
   securitySchemes:
     bearer:
       scheme: bearer

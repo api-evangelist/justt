@@ -120,6 +120,13 @@ paths:
       - Evidence
 components:
   schemas:
+    EvidenceSubmissionLifecycle:
+      type: string
+      enum:
+      - created
+      - inProgress
+      - failed
+      - succeeded
     CreateResponseDTO:
       type: object
       properties:
@@ -229,13 +236,6 @@ components:
       - referenceAccountId
       - status
       - submittedAt
-    EvidenceSubmissionLifecycle:
-      type: string
-      enum:
-      - created
-      - inProgress
-      - failed
-      - succeeded
     SubmitEvidenceDto:
       type: object
       properties:
