@@ -11,6 +11,7 @@ checked:
 - https://n8n.io/integrations/justt/
 - https://zapier.com/apps/justt/integrations
 - okta/integrations/okta-integration-edges.yml
+- shopify/integrations/shopify-integration-edges.yml
 summary: null
 marketplace_apps: []
 edges:
@@ -35,4 +36,20 @@ edges:
   - OKTA_VERIFIED
   features:
   - OIDC
+- partner_name: Shopify (own)
+  partner: shopify
+  partner_match: mirror
+  mirror_match: domain
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://apps.shopify.com/justt-lite
+  mirror_of: shopify/integrations/shopify-integration-edges.yml
+  apps:
+  - Justt ‑ Win More Chargebacks
+  listing_count: 1
+  detected: '2026-10-15'
+  detected_by: mirror-platform-listings.py
 templates: []
