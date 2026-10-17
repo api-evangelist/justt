@@ -59,25 +59,6 @@ paths:
       - Data Subjects
 components:
   schemas:
-    DataSubjectRemovalRequestDto:
-      type: object
-      properties:
-        email:
-          type: string
-          description: Email address of the data subject
-          example: john.doe@example.com
-        firstName:
-          type: string
-          description: First name of the data subject
-          example: John
-        lastName:
-          type: string
-          description: Last name of the data subject
-          example: Doe
-      required:
-      - email
-      - firstName
-      - lastName
     ErrorResponseDTO:
       type: object
       properties:
@@ -111,6 +92,25 @@ components:
       required:
       - status
       - message
+    DataSubjectRemovalRequestDto:
+      type: object
+      properties:
+        email:
+          type: string
+          description: Email address of the data subject
+          example: john.doe@example.com
+        firstName:
+          type: string
+          description: First name of the data subject
+          example: John
+        lastName:
+          type: string
+          description: Last name of the data subject
+          example: Doe
+      required:
+      - email
+      - firstName
+      - lastName
     HttpStatus:
       type: number
       enum:
