@@ -64,5 +64,158 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-Justt is a company surfaced via the API Evangelist harvest backlog (source: secondary-market) and added to the network as a stub for full-pipeline profiling.
-- https://www.hiive.com/securities/justt-stock
+Justt is an AI-native chargeback management and dispute-representment platform for high-volume merchants. Its Dynamic Arguments engine assembles evidence-backed representment packages for card disputes across 30+ payment service providers (Stripe, Adyen, PayPal, Braintree, Checkout.com, Worldpay, Chase Paymentech, Nuvei and others), and it also handles pre-chargeback alerts from Ethoca, Verifi CDRN and RDR. Justt publishes a public developer portal at developers.justt.ai with three OpenAPI definitions — a REST API for chargebacks, transactions, evidence, files, merchants and integrations; a Pre-Chargeback Alerts API; and an OpenAPI 3.1 webhook-events specification covering eleven signed event types — plus an RFC 9727 /.well-known/api-catalog, an llms.txt documentation index, a sandbox environment, and a Vanta-hosted trust center.
+
+**Areas:** Company · Payments · Chargebacks · Disputes · Fraud Prevention · Risk Management · Financial Services · E-Commerce · Artificial Intelligence · Webhook
+
+## Justt on APIs.io
+
+Everything profiled for Justt is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/justt/](https://apis.io/providers/justt/)** — or go straight to one of the APIs or properties below.
+
+### APIs (9)
+
+- [Justt Chargebacks API](https://apis.io/apis/justt/justt-chargebacks-api/) — The Chargebacks API from Justt — 4 operation(s) for chargebacks.
+- [Justt Data Subjects API](https://apis.io/apis/justt/justt-data-subjects-api/) — The Data Subjects API from Justt — 1 operation(s) for data subjects.
+- [Justt Evidence API](https://apis.io/apis/justt/justt-evidence-api/) — The Evidence API from Justt — 2 operation(s) for evidence.
+- [Justt Files API](https://apis.io/apis/justt/justt-files-api/) — The Files API from Justt — 1 operation(s) for files.
+- [Justt Integrations API](https://apis.io/apis/justt/justt-integrations-api/) — The Integrations API from Justt — 2 operation(s) for integrations.
+- [Justt Merchants API](https://apis.io/apis/justt/justt-merchants-api/) — The Merchants API from Justt — 2 operation(s) for merchants.
+- [Justt Pre-chargeback Alerts API](https://apis.io/apis/justt/justt-pre-chargeback-alerts-api/) — The Pre-chargeback Alerts API from Justt — 3 operation(s) for pre-chargeback alerts.
+- [Justt Sandbox API](https://apis.io/apis/justt/justt-sandbox-api/) — The Sandbox API from Justt — 1 operation(s) for sandbox.
+- [Justt Transactions API](https://apis.io/apis/justt/justt-transactions-api/) — The Transactions API from Justt — 1 operation(s) for transactions.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### Arazzo workflows (4)
+
+Multi-step workflows that chain operations into a business task.
+
+- [Work a Justt pre-chargeback alert to a reported outcome](https://apis.io/arazzos/justt/justt-alert-to-outcome/)
+- [Drive a chargeback through its lifecycle in the Justt sandbox](https://apis.io/arazzos/justt/justt-sandbox-lifecycle/)
+- [Submit evidence for a Justt chargeback](https://apis.io/arazzos/justt/justt-submit-evidence/)
+- [Triage Justt chargebacks and set the representment decision](https://apis.io/arazzos/justt/justt-triage-and-decide/)
+
+#### AsyncAPI (1)
+
+Event-driven and webhook contracts.
+
+- [Justt Webhook Events](https://apis.io/asyncapis/justt/justt-webhook-events/)
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [justt-wordpress-mcp](https://apis.io/servers/justt/justt-wordpress-mcp/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Justt Agentic Access](https://apis.io/agentic-access/justt/justt-agentic-access/)
+
+#### Overlays (3)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Justt Pre Chargeback Alerts Overlay](https://apis.io/overlays/justt/justt-pre-chargeback-alerts-overlay/)
+- [Justt Rest Api Overlay](https://apis.io/overlays/justt/justt-rest-api-overlay/)
+- [Justt Webhook Events Overlay](https://apis.io/overlays/justt/justt-webhook-events-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Justt Authentication](https://apis.io/security/justt/justt-authentication/)
+- [Justt Domain Security](https://apis.io/security/justt/justt-domain-security/)
+- [Justt Trust Center](https://apis.io/security/justt/justt-trust-center/)
+
+#### OAuth scopes (1)
+
+The permissions the API asks for.
+
+- [Justt Scopes](https://apis.io/scopes/justt/justt-scopes/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Justt Plans Pricing](https://apis.io/plans/justt/justt-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Justt Rate Limits](https://apis.io/rate-limits/justt/justt-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://justt.ai/)
+- [Documentation](https://developers.justt.ai/docs/getting-started)
+- [Getting started](https://developers.justt.ai/docs/getting-started)
+- [API reference](https://developers.justt.ai/reference)
+- [Support](https://developers.justt.ai/docs/contact-us)
+- [Blog](https://justt.ai/blog/)
+- [Compliance](https://trust.justt.ai/)
+- [Trust centre](https://trust.justt.ai/)
+- [Terms of service](https://justt.ai/terms-of-use/)
+- [Privacy policy](https://justt.ai/privacy-policy/)
+- [Status](https://status.justt.ai/)
+
+## API Evangelist rating
+
+**Kin Score 52.3** — developing · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 75.0 |
+| Contract quality | 56.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 48.7 |
+| Developer ergonomics | 49.4 |
+| Access clarity | 43.4 |
+
+**Agent readiness 52.9** — agent-ready (gated down from agent-native)
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | platform (partial credit) |
+| Auth Clarity | served (partial credit) |
+| Idempotency | — |
+| Error Semantics | verified |
+| OpenAPI Examples | partial |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | yes |
+| Agent Skills | derived (partial credit) |
+| Well Known Catalog | yes |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | served (partial credit) |
+| Protected Resource Metadata | verified |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | paginated |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 33.3** — Payments
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/justt/](https://apis.io/providers/justt/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for Justt: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/justt/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
